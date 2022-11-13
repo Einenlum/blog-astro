@@ -14,5 +14,6 @@ export default defineConfig({
       theme: 'vitesse-light',
       wrap: true,
     }
-  }
+  },
+  site: 'https://www.einenlum.com'
 });
