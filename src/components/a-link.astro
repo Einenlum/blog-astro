@@ -3,15 +3,28 @@
 interface Props {
     href: string,
     children: any,
-    rel?: string
+    rel?: string,
+    additionalClasses?: string
 }
 
-const { href, children, rel } = Astro.props as Props;
+let classlist = [
+    "text-pink-900",
+    "hover:text-pink-700",
+    "dark:text-indigo-200", 
+    "transition",
+    "ease-in-out",
+    "delay-150"
+];
+
+const { href, children, rel, additionalClasses } = Astro.props as Props;
+if (additionalClasses) {
+    classlist.push(additionalClasses);
+}
 ---
 
 <a
     href={href}
-    class="text-pink-900 hover:text-pink-700  dark:text-indigo-200 transition ease-in-out delay-150"
+    class:list={[new Set(classlist)]}
     rel={rel}
 >
     <slot />
