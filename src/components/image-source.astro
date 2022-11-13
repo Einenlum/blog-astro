@@ -1,0 +1,30 @@
+---
+import ALink from './a-link.astro';
+
+function getLicense(license: string|undefined): string {
+    if (!license) {
+        return '';
+    }
+
+    return '(license ' + license + ')';
+}
+
+interface Props {
+    author: string,
+    imageName: string,
+    license?: string,
+    source: string
+}
+
+const {author, imageName, license, source} = Astro.props as Props
+---
+
+<div class="max-w-sm mx-auto text-sm lg:text-base">
+    {imageName
+    ? <p class="text-center mx-auto">
+        <span class="italic">
+            <ALink href={source}>{imageName}</ALink>
+        </span> by {author} {getLicense(license)}
+    </p>
+    : <p class="mx-auto text-center">Image by <ALink href={source}>{author}</ALink> {getLicense(license)}</p>}
+</div>

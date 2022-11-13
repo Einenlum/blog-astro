@@ -1,0 +1,20 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+
+export const publishedAt = new Date(2022, 6, 7);
+export const description =
+  "After a few years of non writing, I'm back. On a blog I own.";
+export const title = 'My blog is back';
+export const components = MarkdownComponents;
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Hello there!
+
+A few years ago, I published my work on a Medium account. I want to host articles on my own now, so I publish again these articles here.
+
+This blog will host articles about what I learn about web development and software engineering on a frequent basis.
+
+See you soon :).
+
+</ArticleLayout>

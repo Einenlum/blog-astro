@@ -1,0 +1,27 @@
+---
+import ALink from '../components/a-link.astro';
+import Header from '../components/header.astro';
+
+export interface Props {
+	title: string,
+	description: string
+}
+
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<link rel="shortcut icon" href="/favicon.png" />
+		<meta name="description" content={description} />
+		<meta charset="UTF-8"> 
+		<title>{title}</title>
+	</head>
+	<body class="dark:bg-neutral-900 dark:text-amber-50">
+		<div class="sm:mx-auto mx-3 sm:max-w-xl md:max-w-2xl 2xl:max-w-3xl mb-20 lg:mb-40 xl:mb-60">
+			<Header />
+			<slot />
+		</div>
+	</body>
+</html>

@@ -1,0 +1,14 @@
+---
+export interface Props {
+    text: string,
+    path: string
+}
+
+const { text, path } = Astro.props as Props;
+---
+
+<li class="mx-3 md:mx-6 last:mr-0 border-b-2 pb-1 border-dotted dark:border-gray-600 md:text-lg">
+    <a href={path} class="transition ease-in-out delay-150 hover:text-pink-700 hover:dark:text-pink-600">
+        {text}
+    </a>
+</li>

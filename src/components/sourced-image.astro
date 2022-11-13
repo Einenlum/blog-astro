@@ -1,0 +1,23 @@
+---
+import ImageSource from './image-source.astro';
+
+export interface Props {
+    src: string,
+    author: string,
+    imageName: string,
+    license: string,
+    source: string
+    alt: string
+}
+
+const { src, author, imageName, license, source, alt } = Astro.props as Props
+---
+
+<div class="my-10 mx-auto">
+        <img
+            class="mx-auto"
+            src={src}
+            alt={alt}
+        />
+    <ImageSource author={author} imageName={imageName} license={license} source={source}></ImageSource>
+</div>

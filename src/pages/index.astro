@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/layout.astro';
+import type { Article } from '../components/article-element.astro';
+import ArticlesContainer from '../components/articles-container.astro';
+const posts = await Astro.glob('./articles/*.mdx');
+
+const getArticles = (): Article[] => {
+	const articles = posts.map((post) => {
+		return {
+			link: post.url as string,
+			articleTitle: post.title,
+			publishedAt: post.publishedAt,
+			description: post.description as string,
+		}
+	});
+
+	const articlesOrderedByMostRecent = articles.sort((a, b) => b.publishedAt - a.publishedAt);
+
+	return articlesOrderedByMostRecent;
+};
+const articles = getArticles();
+---
+
+<Layout title="Einenlum's blog" description="Einenlum's personal blog. Here we talk about PHP, Python, Rust, and programming in general.">
+	<ArticlesContainer articles={articles} />
+</Layout>

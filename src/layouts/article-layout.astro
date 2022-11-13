@@ -1,0 +1,18 @@
+---
+import ArticleHeader from '../components/article-header.astro';
+import Layout from './layout.astro';
+
+export interface Props {
+	title: string,
+	description: string,
+    publishedAt: Date
+}
+
+const { title, description, publishedAt } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+    <ArticleHeader title={title} publishedAt={publishedAt} />
+
+    <slot />
+</Layout>

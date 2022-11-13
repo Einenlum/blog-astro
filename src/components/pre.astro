@@ -1,0 +1,7 @@
+<!--
+Had to add overflow-x-auto and whitespace-pre-wrap because there
+seems to be a bug with mdx and wrap. Even though I set the "wrap" option to true in astro.config.mjs,
+it keeps breaking my layout.
+See this issue: https://github.com/withastro/astro/issues/4345
+-->
+<pre class="overflow-x-auto whitespace-pre-wrap text-xs sm:text-sm md:text-base"><slot /></pre>

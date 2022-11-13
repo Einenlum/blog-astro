@@ -1,0 +1,19 @@
+---
+import HeaderElement from './header-element.astro'
+
+const elements = [
+    { text: 'Blog', path: '/' },
+    { text: 'About', path: '/about' },
+]
+
+---
+
+
+<header class="mb-14 md:mb-20">
+    <h1 class="text-right md:my-12 xl:my-16 mb-4 mt-10 text-xl md:text-2xl font-mono">Einenlum<span class="text-pink-700 font-bold">.</span></h1>
+    <nav class="my-6 md:my-12 md:pr-0 pr-2">
+        <ul class="flex justify-end">
+            {elements.map((element) => <HeaderElement text={element.text} path={element.path} />)}
+        </ul>
+    </nav>
+</header>

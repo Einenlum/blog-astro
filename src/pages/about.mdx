@@ -1,0 +1,39 @@
+import Layout from '../layouts/layout.astro';
+import MastodonLink from '../components/mastodon-link.astro';
+import { components as MarkdownComponents } from '../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+<Layout title="About this blog" description="I'm a PHP and Python developer. This is my personal blog.">
+    # About
+
+    I'm a PHP and Python developer. Mostly living in Paris. I love open source and human languages.
+
+    You can find me on [Github](https://github.com/Einenlum), [Twitter](https://twitter.com/Einenlum), [LinkedIn](https://www.linkedin.com/in/yann-rabiller/) and <MastodonLink url="https://fosstodon.org/@einenlum" text="Mastodon" />. AFK, my name is Yann Rabiller. Right now I'm mainly working as a contractor for short assignments. If you think we could work together, you can contact me [here](mailto:yann.rabiller@gmail.com).
+
+    Currently writing a book about Python for PHP developers. Coming soon 🙊. Also having fun with photography 📷. You can check out my [Flickr here](https://www.flickr.com/photos/einenlum/).
+
+    ## My skills
+
+    - **PHP**: Mostly working with **Symfony**, but I can also work with **Laravel**
+    - **Python**: I can find my way around **Django**
+    - Tools: **docker**, **git**, **vim**
+    - Databases: **Mysql**, **postgres**
+    - Practices: DDD, BDD, Hexagonal Architecture
+    - Frontend: I can fix a few things with **ReactJS**, but I'm not an expert
+    - Human languages: **French** (native), **English** (fluent), **German** (intermediate), **Italian** (intermediate), **Polish** (beginner)
+
+    ## What I want to learn next
+
+    - Having fun right now (who would have thought) with [Next.js](https://nextjs.org/) and [TailwindCSS](https://tailwindcss.com/). Would love to be more at ease with frontend, Javascript and Typescript in general.
+    - I started learning Rust recently. The learning curve is quite steep, but it's a very interesting journey.
+    - WebAssembly tickles my curiosity.
+
+    ## About this website
+
+    It was happily built thanks to [TailwindCSS](https://tailwindcss.com/), [Next.js](https://nextjs.org/) and [Typescript](https://www.typescriptlang.org/).
+
+    Some blog articles were written a long time ago on my *Medium* account. I want to host articles on my own now.
+
+    I decided to post every week an article about what I learned. We'll see how it goes.
+
+</Layout>

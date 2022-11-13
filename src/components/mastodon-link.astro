@@ -1,0 +1,12 @@
+---
+import ALink from "./a-link.astro"
+
+interface Props {
+    url: string,
+    text: string
+}
+
+const {url, text} = Astro.props as Props
+---
+
+<ALink rel="me" href={url} >{text}</ALink>

@@ -1,0 +1,14 @@
+---
+import ArticleElement from "./article-element.astro";
+import type {Article} from "./article-element.astro";
+
+interface Props {
+    articles: Article[]
+}
+
+const {articles} = Astro.props as Props
+---
+
+<div class="my-8">
+    {articles.map(article => <ArticleElement article={article} />)}
+</div>

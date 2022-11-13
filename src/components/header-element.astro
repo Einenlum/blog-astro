@@ -1,0 +1,17 @@
+---
+import HeaderActiveElement from "./header-active-element.astro";
+import HeaderInactiveElement from "./header-inactive-element.astro";
+
+const currentPath = new URL(Astro.request.url).pathname;
+
+interface Props {
+    path: string,
+    text: string
+}
+
+const {path, text} = Astro.props as Props;
+const isActive = path === currentPath;
+
+---
+
+{isActive ? <HeaderActiveElement text={text} /> : <HeaderInactiveElement text={text} path={path} />}
