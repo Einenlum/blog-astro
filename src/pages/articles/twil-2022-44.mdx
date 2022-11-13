@@ -98,7 +98,7 @@ $this->travelTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2022-11-06'));
 
 Blade, Laravel's templating engine, allows to natively create [components](https://laravel.com/docs/9.x/blade#components). Every template in `resources/views/components` (ex: `my-card.blade.php`) can then be called in another template (ex: `<x-my-card></x-mx-card>`).
 
-You can pass children components that will be accessible through `{{ $slots }}` (equivalent to React's `{{ children }}`).
+You can pass children components that will be accessible through `{{ $slots }}` (equivalent to React's `{ children }`).
 
 Twig also has [components](https://symfony.com/bundles/ux-twig-component/current/index.html).
 
