@@ -18,5 +18,5 @@ const {article} = Astro.props as Props
 <div class="mt-8 mb-3">
     <ArticleLink href={article.link}>{article.articleTitle}</ArticleLink>
     <p class="text-sm justify-end text-gray-700 dark:text-gray-400">{article.publishedAt.toDateString()}</p>
-    <p class="ml-4 py-4 text-gray-800 dark:text-gray-300">{article.description}</p>
+    <p class="ml-4 py-4 text-gray-700 dark:text-gray-200">{article.description}</p>
 </div>
