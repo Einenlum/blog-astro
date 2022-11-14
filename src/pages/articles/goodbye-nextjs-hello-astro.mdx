@@ -1,0 +1,232 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+
+export const publishedAt = new Date(2022, 10, 14);
+export const description = 'How I drastically reduced the size of my website.';
+export const title = 'Goodbye NextJS, hello Astro!';
+export const components = MarkdownComponents;
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## JS: a hate story
+
+Frontend had never been my thing. I had always been more attracted to backend stuff: dealing with some serialization processes and a few data types had always been way more relaxing and interesting to me than dealing with the DOM.
+
+When I started my first job as a web developer in an agency (surrounded by very clever minds) I didn't know JS. And I felt already that everything was moving way too fast.
+
+I should probably write about it someday, but I clearly developed a fear of Javascript all these years (CSS was not a great story either).
+
+Recently when I decided to create this blog, I wanted to overcome my fear of JS and CSS. NextJS was a nice discovery (Thanks [Olivier](https://devblog.dunsap.com/)!). I had already worked with React a bit, but having a framework organizing everything was quite reassuring. When I also added TailwindCSS, I even started to have fun.
+
+The speed of development was quite crazy. I still had a few things to care about, like creating the RSS feed, finding a way to fetch all my articles to build the homepage… But overall, it was a surprisingly pleasant experience.
+
+**I then moved the blog to Typescript which was again a surprisingly positive discovery.**
+
+The only thing that was bothering me was the size of the website. My blog was just static pages and the fact that the homepage was already a few hundred kilobytes made no sense.
+
+Why send all this JS to the wire for a website that has no interactivity?
+
+Thanks to the [Fireship youtube channel,](https://fireship.io/) I discovered [Astro.](https://astro.build/) It felt like it was exactly what I needed. The idea of the possibility of not sending JS was just so appealing!
+
+## To the stars!
+
+Moving from NextJS to Astro was really easy. I decided I would not use React anymore since my needs were quite basic and the astro template system was perfect for me. I enjoyed the separation between the rendered part and the data fetching part.
+
+I needed to change the name of my files (from `.tsx` to `.astro`), to add the suffix in import statements (`import ... from 'my-component.astro'`), to remove all these verbose `export const MyElement = () {}` and change all the `className` to `class` (YES!).
+
+Before:
+
+```tsx
+import ALink from './a-link';
+
+function getLicense(license: string | undefined): string {
+  if (!license) {
+    return '';
+  }
+
+  return '(license ' + license + ')';
+}
+
+interface Props {
+  author: string;
+  imageName: string;
+  license?: string;
+  source: string;
+}
+
+export default function ImageSource({
+  author,
+  imageName,
+  license,
+  source,
+}: Props) {
+  return (
+    <div className="max-w-sm mx-auto text-sm lg:text-base">
+      {imageName ? (
+        <p className="text-center mx-auto">
+          <span className="italic">
+            <ALink href={source}>{imageName}</ALink>
+          </span>{' '}
+          by {author} {getLicense(license)}
+        </p>
+      ) : (
+        <p className="mx-auto text-center">
+          Image by <ALink href={source}>{author}</ALink> {getLicense(license)}
+        </p>
+      )}
+    </div>
+  );
+}
+```
+
+After:
+
+```astro
+---
+import ALink from './a-link.astro';
+
+function getLicense(license: string | undefined): string {
+  if (!license) {
+    return '';
+  }
+
+  return '(license ' + license + ')';
+}
+
+interface Props {
+  author: string;
+  imageName: string;
+  license?: string;
+  source: string;
+}
+
+const { author, imageName, license, source } = Astro.props as Props;
+---
+
+<div class="max-w-sm mx-auto text-sm lg:text-base">
+  {
+    imageName ? (
+      <p class="text-center mx-auto">
+        <span class="italic">
+          <ALink href={source}>{imageName}</ALink>
+        </span>{' '}
+        by {author} {getLicense(license)}
+      </p>
+    ) : (
+      <p class="mx-auto text-center">
+        Image by <ALink href={source}>{author}</ALink> {getLicense(license)}
+      </p>
+    )
+  }
+</div>
+```
+
+Very similar.
+
+A greaaaaaaaat thing with Astro is the automatic syntax highlighting (happening on the server, not in the client). Damn, it made my life so much easier. It was quite a nightmare to make it work with NextJS (more on Astro and syntax highlighting [in their docs](https://docs.astro.build/en/guides/integrations-guide/mdx/#syntax-highlighting)).
+
+Another nice surprise is the `Astro.glob` function that gives you a list of your files, including some exported variables and their path automatically.
+
+```js
+const posts = await Astro.glob('./articles/*.mdx');
+```
+
+I also particularly enjoyed how easy it was to generate a full RSS feed. Damn. It was way more complicated with NextJS.
+
+Here is the only thing needed, stored in `/src/pages/rss.xml.js` (I used JS here instead of typescript because I didn't want to bother with all the types ^^):
+
+```js
+import rss from '@astrojs/rss';
+
+const articleImportResult = import.meta.glob('./articles/*.mdx', {
+  eager: true,
+});
+const articles = Object.values(articleImportResult);
+const recentArticles = articles.sort((a, b) => b.publishedAt - a.publishedAt);
+
+export const get = () =>
+  rss({
+    title: 'Einenlum',
+    description: "Einenlum's blog",
+    site: import.meta.env.SITE,
+    items: recentArticles.map((article) => ({
+      title: article.title,
+      description: article.description,
+      link: article.url,
+      pubDate: article.publishedAt,
+    })),
+    customData: `<language>en-us</language>`,
+  });
+```
+
+And that's all! More about RSS [here](https://docs.astro.build/en/guides/rss/).
+
+One thing I regret a bit though is that you have to define your markdown equivalent components in every `.mdx` file instead of doing it in one place. Example:
+
+```tsx
+import H1 from '../components/h1.astro';
+import H2 from '../components/h2.astro';
+
+export const components = {
+  h1: H1,
+  h2: H2,
+};
+```
+
+The exported `components` variable holds the mapping between the markdown tags and the components to use. But it's not such a big deal if you just import this mapping from somewhere else and assign it to the local components variable in every mdx file.
+
+More about the MDX integration [here](https://docs.astro.build/en/guides/integrations-guide/mdx/).
+
+**You can see the previous version of my blog written with NextJS [here](https://github.com/Einenlum/blog-nextjs) and the current version written with Astro [here](https://github.com/Einenlum/blog-astro).**
+
+## Benchmark
+
+Here is how what the main page loaded with NextJS:
+
+![A capture of Firefox developer tools on the network tab, showing the list of downloaded files](https://res.cloudinary.com/dybam16gk/image/upload/v1668464307/blog_images/before-files_nrmmwv.png)
+
+Here is the global size:
+
+![A capture of Firefox developer tools on the network tab, showing the size of the page](https://res.cloudinary.com/dybam16gk/image/upload/v1668464307/blog_images/before-size_zd2lnr.png)
+
+_Pardon my French… system (pun intended)._
+
+We can see we had 11 requests for a total of 307 kilobytes.
+
+Here is the main page today with Astro:
+
+![A capture of Firefox developer tools on the network tab, showing the list of downloaded files](https://res.cloudinary.com/dybam16gk/image/upload/v1668464307/blog_images/after-files_m2cccx.png)
+
+And the global size:
+
+![A capture of Firefox developer tools on the network tab, showing the size of the page](https://res.cloudinary.com/dybam16gk/image/upload/v1668464306/blog_images/after-size_aaoh3n.png)
+
+We now have only 4 requests (no Javascript!) and only 50 kilobytes.
+
+Some articles were quite heavy before, because I needed to create the syntax highlighting on the client side. For [this article](https://www.einenlum.com/articles/docker-compose-circle-ci), there were a lot of files and bytes involved:
+
+![A capture of Firefox developer tools on the network tab, showing the list of downloaded files](https://res.cloudinary.com/dybam16gk/image/upload/v1668466065/blog_images/before-ci-files_irsmrb.png)
+
+![A capture of Firefox developer tools on the network tab, showing the size of the page](https://res.cloudinary.com/dybam16gk/image/upload/v1668466064/blog_images/before-ci-size_uak8jg.png)
+
+12 requests and 1.36 Megabyte just for an article with some codeblocks was really excessive…
+
+Here is how it looks like now:
+
+![A capture of Firefox developer tools on the network tab, showing the list of downloaded files](https://res.cloudinary.com/dybam16gk/image/upload/v1668466194/blog_images/after-ci-files_qk9ukt.png)
+
+![A capture of Firefox developer tools on the network tab, showing the size of the page](https://res.cloudinary.com/dybam16gk/image/upload/v1668466194/blog_images/after-ci-size_bn2egj.png)
+
+3 requests and **50 kilobytes**!
+
+This page's size was divided by **21**.
+
+Now, I probably didn't configure NextJS the best way, I admit. But you can't beat a page without JS in terms of file size and browser being quickly responsive.
+
+Using Astro was so pleasant.
+
+I didn't have to use [Astro islands](https://docs.astro.build/en/concepts/islands/) yet because all my website needs no JS. I'll be curious to try this out if needed.
+
+Till now, I'm happy.
+
+</ArticleLayout>
