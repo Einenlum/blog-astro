@@ -123,6 +123,32 @@ const { author, imageName, license, source } = Astro.props as Props;
 
 Very similar.
 
+The children components are automatically available (not passed as parameters) through the `<slot />` directive, replacing `{children}` in React.
+
+Before:
+
+```tsx
+// h3.tsx
+
+export default function H3({ children }: { children: any }) {
+  return (
+    <h3 className="text-lg border-l-2 border-pink-900 font-bold my-5 pl-4 font-sans">
+      {children}
+    </h3>
+  );
+}
+```
+
+After:
+
+```html
+// h3.astro
+
+<h3 class="text-lg border-l-2 border-pink-900 font-bold my-5 pl-4 font-sans">
+  <slot />
+</h3>
+```
+
 A greaaaaaaaat thing with Astro is the automatic syntax highlighting (happening on the server, not in the client). Damn, it made my life so much easier. It was quite a nightmare to make it work with NextJS (more on Astro and syntax highlighting [in their docs](https://docs.astro.build/en/guides/integrations-guide/mdx/#syntax-highlighting)).
 
 Another nice surprise is the `Astro.glob` function that gives you a list of your files, including some exported variables and their path automatically.
