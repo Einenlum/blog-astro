@@ -1,0 +1,92 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2022, 10, 21);
+export const description = 'TWIL about Neovim, Lua, Typescript and Python.';
+export const title = 'This Week I Learned: 2022W46';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Neovim - Lua
+
+Since I changed my vim config to use lua almost everywhere I didn't understand why I kept having a folder called `~` created in many working folders.
+Apart from being super dangerous (no, I didn't try to remove it with `rm -Rf ~` fortunately **\[PLEASEDONTDOTHAT\]**. I was happy to use my GUI for this), it was super weird.
+
+I realized it's because of this option in one of my lua config files:
+
+```lua
+vim.opt.backupdir = "~/.config/nvim/backup"
+```
+
+It was creating a whole `./~/.config/nvim/backup` in my current directory.
+
+What worked before with VimScript dosn't work with lua anymore (the `~` folder is not transformed into my HOME directory).
+
+You have to use this instead:
+
+```lua
+vim.opt.backupdir = os.getenv("HOME") .. "/.config/nvim/backup"
+```
+
+Found [here](https://github.com/neovim/neovim/issues/15777).
+
+## Typescript
+
+I learned this week the existence of the `Readonly` keyword in typescript.
+In Typescript (and Javascript), the `const` keyword only implies you cannot set another value to the same variable name.
+
+```typescript
+const my_val = 2;
+// Cannot redeclare block-scoped variable 'my_val'.(2451)
+const my_val = 3;
+```
+
+But if the value itself is mutable, declaring it as `const` still allows you to mutate it.
+
+```typescript
+const my_val = ['a', 'b', 'c'];
+
+// This is okay
+my_val.push('d');
+```
+
+If you want to make it immutable, you can use the `Readonly` utility type.
+
+```typescript
+const my_val: Readonly<string[]> = ['a', 'b', 'c'];
+
+// Property 'push' does not exist on type 'readonly string[]'.(2339)
+my_val.push('d');
+```
+
+It's nice, but Typescript still won't treat your variable as a constant:
+
+```typescript
+const my_val: Readonly<string[]> = ['a', 'b', 'c'];
+
+// const letter: string
+const letter = my_val[1];
+```
+
+If you want to do so, you can use `as const`:
+
+```typescript
+const my_val = ['a', 'b', 'c'] as const;
+
+// const letter: 'c'
+const letter = my_val[1];
+```
+
+And the mutation is still not possible.
+
+Typescript also has multiple very interesting utility types. Documentation [here](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+
+Since version 4.9, Typescript also has a new `satisfies` operator, which allows to typehint a variable (and checks it's valid) while still know about its values. You can check [this well written article](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#the-satisfies-operator) explaining it.
+
+## Python - Linter
+
+It seems like Rust starts to become the new standard for fast tools.
+[Ruff](https://github.com/charliermarsh/ruff) is the new kid on the block when it comes to Python linters. Didn't try it yet, but the benchmarks are astonishing.
+
+</ArticleLayout>
