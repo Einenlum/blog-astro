@@ -1,0 +1,97 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2022, 10, 28);
+export const description = 'TWIL about Rust and SQL.';
+export const title = 'This Week I Learned: 2022W47';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Rust
+
+In Rust, what distinguishes a struct _method_ from an _associated function_ (in Python we could say a _method_ from a _static method_) is simply the fact that the first parameter is `self`. Really reminds me of Python.
+
+```rust
+struct MyStruct {}
+
+impl MyStruct {
+    // Associated function
+    fn my_associated_function(foo: String) {}
+
+    // Method
+    fn my_method(self, foo: String) {}
+}
+```
+
+On the contrary to Python, `self` is meaningful and cannot be replaced with another label.
+
+Also, Rust doesn't allow named or keyword parameters, only positional parameters.
+
+## Rust - Todo macro
+
+When writing Rust code, the compiler and linter can be a bit annoying because we specified a return type and we have not finished writing our function yet. If you want to get rid for now of the compiler errors about this, you can add the macro `todo!()` into your function.
+
+You can find the documentation [here](https://doc.rust-lang.org/std/macro.todo.html).
+
+## Rust - Borrowing and references
+
+You can have a reference of a reference of a reference of a ref…
+
+Which means this is perfectly valid in Rust:
+
+```rust
+let foo = "foo";
+let new_string = format!("My new string: {}", &&&&&&&&&&&foo);
+```
+
+## Rust - Shorthand properties
+
+Rust has shorthand property names as in Javascript.
+
+```rust
+struct Person {
+    age: u8
+}
+
+// ...
+let age = 18;
+
+// Both are equivalent
+Person({age: age});
+Person({age});
+```
+
+## Rust - Traits
+
+You can implement a trait like this:
+
+```rust
+struct Person {}
+
+impl Drop for Person {
+    fn drop(&mut self) {}
+}
+```
+
+You can read more about traits [here](https://doc.rust-lang.org/book/ch10-02-traits.html). The `Drop` trait is interesting because it defines a method that will be called before the variable is dropped in memory.
+
+## SQL
+
+You can use index integers in SQL's GROUP BY and ORDER BY, relating to the columns in the SELECT statement (index starts at 1).
+
+```sql
+SELECT id, name
+FROM account
+ORDER BY 2;
+```
+
+is equivalent to:
+
+```sql
+SELECT id, name
+FROM account
+ORDER BY name;
+```
+
+</ArticleLayout>
