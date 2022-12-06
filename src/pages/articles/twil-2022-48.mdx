@@ -1,0 +1,47 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2022, 11, 6);
+export const description = 'TWIL about SQL, Composer, PHP and CSS.';
+export const title = 'This Week I Learned: 2022W48';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## SQL
+
+The major time spent in an SQL response from a database server is networking. This is why reducing the number of requests is important when using MySQL or Postgres, and why it matters way less when using a filebased database like sqlite.
+
+See [this great article](https://mycelial.com/blog/sqlite-and-the-n-plus-one-no-problem/) to understand more.
+
+Thanks [Olivier](https://devblog.dunsap.com/) for this info.
+
+## NewSQL
+
+[NewSQL](https://en.wikipedia.org/wiki/NewSQL) is a term coined to designate all the new distributed SQL databases like CockroachDB or SingleStore.
+
+## Composer - PHP
+
+To get the tree of dependencies on a project you can use `composer show -t`.
+
+![A capture of what "composer show -t" looks like](https://res.cloudinary.com/dybam16gk/image/upload/v1670163745/composershowt_bx0j6b.png)
+
+You can also specify a root package with `composer show -t <name/of-the-package>`.
+
+## PHP - DateInterval
+
+In the `DateInterval` object, the `days` property will be `false` if the DateInterval was created manually (like `new \DateInterval('P1Y')`) but will contain the int representing the number of days if created through a `$dt1->diff($dt2)` method.
+
+See the documentation [here](https://www.php.net/manual/en/class.dateinterval.php).
+
+## CSS
+
+I discovered randomly the color `rebeccapurple` in CSS.
+
+It's a tribute to the 6yo daughter of Eric Meyer (a maintainer of CSS standards), who died of a brain cancer.
+
+You can learn more about this story [here](https://medium.com/@valgaze/the-hidden-purple-memorial-in-your-web-browser-7d84813bb416).
+
+Meyer has a blog where he writes about his loss, in an incredibly moving way. Be warned, it's incredibly sad. You can read in particular this short article: "[So many nevers](https://meyerweb.com/eric/thoughts/2014/06/10/so-many-nevers/)".
+
+</ArticleLayout>
