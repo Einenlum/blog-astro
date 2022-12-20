@@ -1,0 +1,125 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2022, 11, 20);
+export const description = 'TWIL about MySQL, PHP, and Vim.';
+export const title = 'This Week I Learned: 2022W50';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+No TWIL last week cause with the end of the year (and the writing of my Python book), it was quite hard to keep up.
+
+## Mysql - JSON
+
+You can enforce the schema of a JSON column in MySQL.
+
+Let's say we create a table with a `JSON` column type.
+
+```sql
+CREATE TABLE my_table (my_data JSON NOT NULL DEFAULT('{}'));
+```
+
+We can actually alter the table and create a constraint to check before insertion if the JSON column is valid, given a custom JSON schema.
+
+First generate a JSON schema (you can use tools like [this one online](https://www.liquid-technologies.com/online-json-to-schema-converter) to make it easier).
+
+Then we are going to alter the table and create a constraint that checks if the JSON data input is valid given the JSON schema.
+
+```sql
+ALTER TABLE my_table
+    ADD CONSTRAINT my_data_is_valid CHECK (
+        JSON_SCHEMA_VALID(
+            '{
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "posts": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "title",
+                        "tags"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "posts"
+              ]
+            }',
+            my_data
+        )
+    );
+```
+
+Now if we try to insert some valid and invalid data:
+
+```sql
+/* No error */
+INSERT INTO my_table (my_data) VALUES ('{"posts": [{"title": "some title", "tags": ["food", "tech"]}]}');
+
+/* Here I add a forbidden new property */
+/* ERROR 3819 (HY000) at line XX: Check constraint 'my_data_is_valid' is violated. */
+INSERT INTO my_table (my_data) VALUES ('{"posts": [{"title": "some title", "tags": ["food", "tech"]}], "someAdditionalProperty": "lorem"}');
+
+/* Here I forget to provide the required tags property */
+/* ERROR 3819 (HY000) at line XX: Check constraint 'my_data_is_valid' is violated. */
+INSERT INTO my_table (my_data) VALUES ('{"posts": [{"title": "some title"}]}');
+```
+
+Found in this [tweet](https://twitter.com/aarondfrancis/status/1600568712205041664).
+
+## PHP - Enum
+
+PHP Enums don't allow most of magic methods, on the contrary to objects. Doc [here](https://wiki.php.net/rfc/enumerations#comparison_to_objects).
+
+## Vim
+
+In Vim/Neovim, after you have selected some lines visually, you can use the key `=` to autoformat these lines. Pretty useful!
+
+## Vim
+
+You can use `&` in your search and replace to use the matched experession.
+
+For example, if you have this text:
+
+```
+- https://google.com
+- https://github.com
+- https://reddit.com
+```
+
+If you search and replace using the `&` sign:
+
+```
+:%s/https:\/\/.\+/[&](&)
+```
+
+```
+- [https://google.com](https://google.com)
+- [https://github.com](https://github.com)
+- [https://reddit.com](https://reddit.com)
+```
+
+</ArticleLayout>
