@@ -1,0 +1,40 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2022, 11, 23);
+export const description = 'Some feedback on what happened in 2022.';
+export const title = 'What a year.';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+2022 is almost over and it's probably the right time to take a step back and reflect on what happened to me this year.
+
+## Publishing my book
+
+As said in my [about page](/about), I have been (for like one year and a half) working on a book to teach Python to PHP developers. The book is mostly written, so these last few months were fully dedicated to finding a publisher. Well, I finally found one and signed a contract a few days ago! 🙌
+
+It's not over and a huge part of the process has started now, but I'm glad I was able to sign a contract before 2023. It was one of my goals and I achieved it.
+
+You will hopefully hear about it soon.
+
+## Creating this blog
+
+I'm really glad I took this decision during the summer to create a blog and publish every week what I had learned the previous one. It's been really interesting to keep track of what I've been learning and it's also way more motivating to share it with people.
+
+Besides the content of my articles, building this blog has taught me a lot about Tailwind, NextJS, Astro and TypeScript. I started with some PTSD regarding frontend and anything related to JavaScript, so I would say it's a huge success.
+
+I'm even interested now in understanding a bit more what can be done with TypeScript on a full-stack project (interested for example in [tRPC](https://trpc.io/)).
+
+## Learning Rust
+
+I started to learn Rust a few months ago. I had to take a break in the end because I was so busy with so many other things… but I really liked the journey. It's really interesting to learn about the borrow checker (on a theoretical level) but even more about how Rust handles errors. I never understood the problem with the exception system but now when I see the elegance of error handling in Rust (with the `Result` enum and the lovely `?` syntax) it makes sense.
+
+I guess now the `if err != nil` syntax in go makes more sense but is also super ugly compared to what Rust provides.
+I will probably try for 2023 to learn a bit more about Rust and finish a small toy project I have about it.
+
+## Copilot and ChatGPT
+
+2022 has been the year of AI. It started with Copilot and ended with ChatGPT. I'm both fascinated and quite anxious about how it will transform our whole industry. 2023 will be so interesting to see in so many aspects.
+
+</ArticleLayout>
