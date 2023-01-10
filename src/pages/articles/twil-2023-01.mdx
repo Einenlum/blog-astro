@@ -1,0 +1,70 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 0, 10);
+export const description =
+  'TWIL about Typescript, Obsidian, Symfony, Security, Lua and Neovim.';
+export const title = 'This Week I Learned: 2023W01';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Happy new year!
+
+I'm back with TWILs. I missed a few in the end of last year because I was quite busy. Back to work!
+
+## Typescript
+
+Since TS 3.7, TS supports `asserts` in the return function.
+
+See the documentation [here](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions).
+This is quite advanced and it took me some time to understand how it works (to understand that the `asserts` keyword does not really assert the condition but pretends the assertion is manually done in the function itself). Still very interesting.
+
+## Note Taking - Obsidian
+
+I discovered the existence of [Obsidian](https://obsidian.md), the note-taking app. I have to say I'm enthusiastic. As a markdown user (I usually write some notes in vim and save them somewhere on my disk), I really like the output and the fact that I control the data.
+
+[This series](https://www.youtube.com/watch?v=ctetnQfSdfM&list=PL7oLu8NfQd84_gsyqBVSVgUmCCgcvSZMx) of Youtube videos is a great introduction to understand the main concepts of Obsidian and why it's better than other note-taking apps.
+
+The Obsidian app is itself open source and free. You can choose to synchronize your notes by yourself (in a git repository, in a cloud storage, etc.) or use the [Obsidian Sync](https://obsidian.md/sync) service (which is paid). I have to say Obsidian Sync is quite expensive, but I like the fact that it's easy to use and that it's end-to-end encrypted.
+
+## Symfony
+
+In Symfony, you can get the current route name in a controller by using the `$_route` variable.
+
+See [here](https://symfony.com/doc/current/routing.html#route-parameters-and-controller-arguments).
+
+## Security
+
+I discovered the [Evilginx2 package](https://github.com/kgretzky/evilginx2), which allows one to easily create phishing pages for various services (Google, Facebook, etc.). Interesting to know some script kiddies use so easy-to-use tools nowadays, and that using an OTP code doesn't protect you from phishing.
+
+Here is a [Youtube video](https://www.youtube.com/watch?v=Xn5MR9jl_tk) showing how it works.
+
+## Lua
+
+Lua array index starts at 1, not 0.
+
+## Neovim - UltiSnips - LuaSnip
+
+[LuaSnip](https://github.com/L3MON4D3/LuaSnip) is the replacer of [UltiSnips](https://github.com/SirVer/ultisnips) for Neovim, using lua. It's used in some LSP configs. I still have to port my UltiSnips snippets to LuaSnip, but it seems there is a [migration guide](https://github.com/evesdropper/dotfiles/tree/main/nvim/luasnip#from-ultisnips-to-luasnip--a-comprehensive-guide) to do so.
+
+I also finally moved my Neovim config to use LSP, thanks to [lsp-zero](https://github.com/VonHeikemen/lsp-zero.nvim) and [this Youtube video from ThePrimeagen](https://www.youtube.com/watch?v=w7i4amO_zaE). I still have to configure some things but I'm really happy I made that move.
+
+## Neovim
+
+Adding this to your lua config will allow you to move the visual selection with `J` and `K`:
+
+```lua
+vim.api.nvim_set_keymap("v", "J", ":m '>+1<CR>gv=gv", {})
+vim.api.nvim_set_keymap("v", "K", ":m '<-2<CR>gv=gv", {})
+```
+
+Also, it reformats the indent while moving. Amazing. Thanks to ThePrimeagen's video quoted before.
+
+## Symfony - Enum - Routing
+
+Starting from Symfony 6.1, you can use PHP backed Enum as route requirements.
+
+See [documentation](https://symfony.com/blog/new-in-symfony-6-1-improved-routing-requirements-and-utf-8-parameters#using-php-backedenum-as-route-requirements).
+
+</ArticleLayout>
