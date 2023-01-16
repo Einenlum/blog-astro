@@ -1,0 +1,80 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 0, 16);
+export const description =
+  'TWIL about Internet protocols, Max integer, Javascript and Neovim.';
+export const title = 'This Week I Learned: 2023W02';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Alternative Protocols to HTTP
+
+I discovered this week the existence of [Gopher](<https://en.wikipedia.org/wiki/Gopher_(protocol)>), a protocol that was created in 1991 for the same purpose as HTTP, but with a different approach (Firefox has had supported it until version 4.0).
+
+Another, more recent protocol, [Gemini](<https://en.wikipedia.org/wiki/Gemini_(protocol)>), was created in 2019 and was inspired by Gopher.
+
+## Max Integer
+
+Javascript has a constant called `MAX_SAFE_INTEGER`, representing the max safe value of an integer (equivalent to 2^53 - 1).
+
+If you go above you will encounter some weird behaviors:
+
+```javascript
+const max = Number.MAX_SAFE_INTEGER;
+console.log(max); // 9007199254740991
+console.log(max + 1); // 9007199254740992
+console.log(max + 2); // 9007199254740992
+console.log(max + 3); // 9007199254740994
+```
+
+PHP has one too:
+
+```php
+$max = PHP_INT_MAX;
+echo $max; // 9223372036854775807
+var_dump($max + 1 === $max + 2); // true
+```
+
+Same for Python:
+
+```python
+import sys
+
+print(sys.maxsize) # 9223372036854775807
+```
+
+## Edge Runtime
+
+Vercel has launched the [Edge runtime](https://nextjs.org/docs/api-reference/edge-runtime), which is a runtime able to run javascript, typescript or web assembly, in CDN nodes.
+It is based on V8, like Node, but it's different from Node. You can use node_modules as long as it does not use node specific APIs like fs.
+
+I'm bad with JS, so it still seems quite complicated to me, but it looks quite fascinating. (Thanks [Olivier](https://devblog.dunsap.com/))
+
+## Neovim - Colorschemes
+
+I have a lot of neovim colorschemes I love, and I change them regularly. I wished I had a different one each time at startup.
+
+This was actually quite easy to achieve with lua:
+
+```lua
+local colors = {
+    'adwaita',
+    'afterglow',
+    'ayu',
+    -- all the colorschemes you like...
+}
+
+-- #colors is the length of the colors array
+-- since lua arrays are 1-indexed, we don't need to add 1
+
+-- math.random returns a random number between
+-- 1 included and #colors included
+local color = colors[math.random(#colors)]
+
+-- .. concatenates strings
+vim.cmd("colorscheme " .. color)
+```
+
+</ArticleLayout>
