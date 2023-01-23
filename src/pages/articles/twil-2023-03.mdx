@@ -1,0 +1,54 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 0, 23);
+export const description =
+  'TWIL about PXP, Lua, Javascript, Cryptography and Git.';
+export const title = 'This Week I Learned: 2023W03';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## PXP - PHP
+
+[PXP](https://pxplang.org/introduction/what-is-pxp.html) is a superset on top of PHP, built in Rust. You can feel the inspiration of Typescript and Rust (Generics and Type aliases) or from Python (operator overloading). At a very early stage right now, but I will keep an eye on it.
+
+## Lua
+
+Lua doesn't have regexes, because the C regex engine is bigger than the whole Lua interpreter itself. Lua has a simpler alternative to regexes called [patterns](https://www.lua.org/pil/20.2.html).
+
+## Javascript
+
+For a long time, doing a deep copy in Javascript required external libraries. It seems like now it's possible natively.
+
+```javascript
+const someObj = {
+  a: 1,
+  b: ['an', 'array'],
+  c: {
+    d: 2,
+  },
+};
+
+// introduction of the new structuredClone function
+const someObj2 = structuredClone(someObj);
+
+someObj.b.push('of', 'strings');
+
+console.log(someObj.b); // ["an", "array", "of", "strings"]
+console.log(someObj2.b); // ["an", "array"]
+```
+
+Available since Node 17.0, Chrome 98 and Firefox 94.
+
+## Cryptography
+
+[Picocrypt](https://github.com/HACKERALERT/Picocrypt) is a small tool written in Go to encrypt and decrypt files, focused on simplicity and security. It is open source (on the contrary to BitLocker) and a security audit is planned.
+
+## Git
+
+[git-sim](https://initialcommit.com/blog/git-sim) is a Python tool to simulate visually what will happen if you launch a git command.
+
+Looks really interesting but the installation (with manim) seems quite cumbersome, unfortunately.
+
+</ArticleLayout>
