@@ -1,0 +1,56 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 1, 1);
+export const description = 'TWIL about Ara, PHP, CSS, Astro and Kodezi.';
+export const title = 'This Week I Learned: 2023W04';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Ara
+
+I talked [last week](/twil-2023-03) about [PXP](https://pxplang.org/introduction/what-is-pxp.html), a PHP Superset written in Rust. It seems another competitor is [Ara](https://ara-lang.io/introduction/what-is-ara.html). Also written in Rust, also a Superset. It seems less advanced, but I will also keep an eye on it.
+
+## PHP
+
+I didn't catch this information but, in PHP 7.4, [appeared an underscore numeric separator](https://php.watch/versions/7.4/underscore_numeric_separator).
+
+This means these lines of code are equivalent (the same feature already existed in Python):
+
+```php
+$a = 1_234_567;
+$b = 1234567;
+
+$a === $b; // true
+```
+
+## CSS
+
+I discovered the `:is` pseudo-class in CSS. Quite convenient.
+
+These are equivalent:
+
+```css
+is(.cls-1, .cls-2, .cls-3) p {
+  color: teal;
+}
+
+.cls-1 p,
+.cls-2 p,
+.cls-3 p {
+  color: teal;
+}
+```
+
+Found [here](https://www.builder.io/blog/css-is).
+
+## Astro
+
+Astro 2.0 [is out](https://astro.build/blog/astro-2/). It introduces [type safety for Markdown and MDX files](https://astro.build/blog/introducing-content-collections/), which sounds quite exciting. I have not migrated this blog to the new version yet, but I will do it soon.
+
+## Kodezi
+
+I discovered [Kodezi](https://kodezi.com/), an AI tool acting like Grammarly but for code. It can explain what your code does, translate it into another language, and optimize it. Didn't try it yet. It has a personal Web IDE or a VS Code extension.
+
+</ArticleLayout>
