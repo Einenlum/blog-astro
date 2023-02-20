@@ -1,0 +1,44 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 1, 20);
+export const description = 'TWIL about Lighthouse, Carbonyl, PHP, JSON Resume.';
+export const title = 'This Week I Learned: 2023W06';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Two weeks have been missing. So many things happened in the meantime, and I didn't have the time to keep this blog up to date.
+
+In particular, I decided to cancel the contract with my publisher to publish my book by myself. Should be out in a few weeks.
+
+## Lighthouse
+
+I discovered the [Lighthouse](https://lighthouse-php.com/5/getting-started/installation.html) Laravel package allowing to use GraphQL in a schema first way. Just tried a few things with it but it's quite impressive.
+
+## Carbonyl
+
+I still don't understand this black magic, but damn. People are doing crazy things now.
+
+[Carbonyl](https://github.com/fathyb/carbonyl) allows to run Chromium in a terminal… this is super impressive. It's easily testable through Docker.
+
+## PHP
+
+One thing I have always missed in PHP is an equivalent of [Python's zip](https://docs.python.org/3/library/functions.html#zip), allowing to loop on multiple iterables at the same time. Seems like it actually exists somehow: the [array_map](https://www.php.net/manual/en/function.array-map.php) function allows to give `null` as the first parameter instead of the callback.
+
+```php
+$countries = ['France', 'Germany', 'Italy'];
+$capitals = ['Paris', 'Berlin', 'Rome'];
+
+foreach (array_map(null, $countries, $capitals) as [$country, $capital]) {
+    var_dump($country, $capital);
+}
+```
+
+If one array is longer than the other one, then the missing values will be `null`.
+
+## JSON Resume
+
+[JSON Resume](https://jsonresume.org/) is a nice project trying to create a standard for resumes in JSON. I like the idea. You have different themes provided by the community and even a CLI to create resumes and a way to import your LinkedIn profile.
+
+</ArticleLayout>
