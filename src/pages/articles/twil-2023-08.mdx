@@ -1,0 +1,36 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 1, 28);
+export const description =
+  'TWIL about encrypted HTML, Psql, PHP, VS Code, Civet.';
+export const title = 'This Week I Learned: 2023W08';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## HTML - Encryption
+
+[Staticrypt](https://github.com/robinmoisson/staticrypt) is a tool that allows you to encrypt HTML files using a password. You can protect some static content on a server like Github pages, Netlfiy or Vercel.
+
+## Postgres - Psql
+
+[Psql Tips](https://psql-tips.org) is a website showing random tips for `psql` (the Postgres CLI).
+
+## PHP - Security Bug
+
+This [PHP bug](https://bugs.php.net/bug.php?id=81744) is really surprising. It seems like for some hashes, if it is invalid, the `password_verify` function returns `true`. The conversation is quite surreal. Probably one of the most incredible "not a bug, it's a feature" I've ever seen.
+
+One could argue it's not such a big deal, since if an attacker has access to the database, you have bigger issues. However, as someone noted on Hacker News, it's not the most probable scenario. If a migration corrupts the database data and in particular some password hashes, it's possible that some users can log in with any password. Aoutch.
+
+## VS Code - Code server
+
+[Code Server](https://github.com/coder/code-server) is a tool that allows to run VS Code is the browser, while it's running on a remote server. It allows to compute everything in the cloud, which makes it possibly lighter for an old laptop.
+
+## Civet - Javascript - Typescript
+
+[Civet](https://civet.dev/) is a superset that compiles into Typescript or Javascript (Who's gonna stop the progress?). It adds some syntactic sugar, mostly taken from Rust or Python.
+
+I particularly like: pattern matching, everything is an expression, string dedent and more flexible spreading.
+
+</ArticleLayout>
