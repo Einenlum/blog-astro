@@ -1,0 +1,33 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 2, 8);
+export const description = 'TWIL about Web crawling, Python and AI.';
+export const title = 'This Week I Learned: 2023W09';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Crul
+
+[Crul](https://www.crul.com/) is a product allowing you to easily crawl websites and manipulate the extracted data. Didn't try it but it seems like a paying product (free for now?) available on Mac OS and Docker.
+
+Will keep an eye on it cause I like the idea and the syntax.
+
+## Pyston
+
+In [this discussion](https://discuss.python.org/t/contributing-the-pyston-jit/24195/8) where a contributor of Pyston suggests integrating their JIT to CPython, I discovered the existence of [Pyston](https://www.pyston.org/) itself.
+
+It focuses on the simplicity of use (it should be really easy to replace CPython with Pyston) to easily drastically improve performance, and it even provides a _lite_ version that doesn't replace CPython but adds a dependency through `pip` or `conda`.
+
+## HackerFM
+
+[HackerFM](https://hacker.fm/) is a daily podcast talking about tech. Its particularity? It's written and hosted by an AI. Some episodes talk about AI itself.
+
+I guess the future is now (and creepy).
+
+## Learn Prompting
+
+[Learn Prompting](https://learnprompting.com/) is a free website teaching you how to write better prompts when interacting with an AI (whether it's ChatGPT or an illustration AI like MidJourney).
+
+</ArticleLayout>
