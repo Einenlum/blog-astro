@@ -1,0 +1,39 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 2, 22);
+export const description = 'TWIL about Python, vim, PHP.';
+export const title = 'This Week I Learned: 2023W11';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Python
+
+[This article](https://tushar.lol/post/cursed-for/) shows how someone tried to implement a `for` loop in _c style_ in Python. It's obviously a bad idea, but Tushar is definitely super creative. A really interesting read.
+
+## Vim
+
+I wondered how to sort alphabetically lines in vim. Turns out it's super simple. Just select the lines you want to sort, and then type `:sort`. That's it. If you want to sort in reverse order, just type `:sort!`.
+
+## PHP
+
+After 10 years of PHP I realized you can actually increment a string.
+
+```php
+$input = 'aa';
+$input++; // 'ab'
+
+$input = 'zz';
+$input++; // 'aaa'
+
+$input = 'string001';
+$input++; // 'string002'
+
+$input = 'string999';
+$input++; // 'strinh000'
+```
+
+Found on twitter [here](https://twitter.com/hansdubois/status/1638193349608833024).
+
+</ArticleLayout>
