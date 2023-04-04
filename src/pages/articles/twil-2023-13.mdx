@@ -1,0 +1,33 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 3, 4);
+export const description = 'TWIL about Python, JSON and Neovim.';
+export const title = 'This Week I Learned: 2023W13';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Python - Pyvibe
+
+[Pyvibe](https://www.pyvibe.com/) allows to create web components just from Python code. It seems super easy to use.
+
+For now only a default theme is supported but there should be more soon.
+
+## JSON - HJSON and JSON5
+
+[JSON5](https://json5.org/) is a language that can be compiled to JSON and allows for a more human readable/editable syntax (comments, trailing commas…). It has been adopted by Chromium or NextJS, and has 6k stars on GitHub.
+
+[HJSON](https://hjson.github.io/) (for Human JSON) is another project in the same style but it seems less known (2.5k stars on GitHub).
+
+## Neovim - Impatient
+
+[Impatient](https://github.com/lewis6991/impatient.nvim) is a Neovim plugin improving the start-up time. But… since my Vim start-up is almost instant (despite aaaall my plugins), I don't really understand the advantage.
+
+The benchmark in the README was quite funny.
+
+Before: _54.337ms_. After: _6.357ms_.
+
+The difference is impressive (in terms of magnitude) but… Well. I tried it, and (surprisingly) I did not see any difference. But if you have 200 hundred more plugins than I have, maybe it could be useful to you.
+
+</ArticleLayout>
