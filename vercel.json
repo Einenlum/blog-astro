@@ -1,21 +1,5 @@
 {
   "redirects": [
-    { 
-      "source": "/fromphptopython",
-      "destination": "https://einenlum.gumroad.com/l/fromphptopython",
-      "permanent": true
-    },
-    {
-        "source": "/(.*)",
-        "has": [
-            {
-                "type": "host",
-                "value": "www.fromphptopython.io"
-            }
-        ],
-        "permanent": false,
-        "destination": "https://einenlum.gumroad.com/l/fromphptopython"
-    },
     {
         "source": "/(.*)",
         "has": [
