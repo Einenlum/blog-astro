@@ -17,7 +17,7 @@
         "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/pattern-matching.pdf"
     },
     {
-        "source": "/books/fromphptopython/sample-chapters/chapter-samples/regexes.pdf",
+        "source": "/books/fromphptopython/sample-chapters/regexes.pdf",
         "permanent": true,
         "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/regexes.pdf"
     }
