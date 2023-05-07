@@ -15,6 +15,17 @@
         ],
         "permanent": false,
         "destination": "https://einenlum.gumroad.com/l/fromphptopython"
+    },
+    {
+        "source": "/(.*)",
+        "has": [
+            {
+                "type": "host",
+                "value": "www.fromphptopython.com"
+            }
+        ],
+        "permanent": true,
+        "destination": "https://einenlum.gumroad.com/l/fromphptopython"
     }
   ]
 }
