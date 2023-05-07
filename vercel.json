@@ -1,9 +1,20 @@
 {
   "redirects": [
     { 
-      "source": "/this-is-a-test",
-      "destination": "https://github.com/vercel/vercel", 
-      "permanent": false
+      "source": "/fromphptopython",
+      "destination": "https://einenlum.gumroad.com/l/fromphptopython",
+      "permanent": true
+    },
+    {
+        "source": "/(.*)",
+        "has": [
+            {
+                "type": "host",
+                "value": "www.fromphptopython.io"
+            }
+        ],
+        "permanent": false,
+        "destination": "https://einenlum.gumroad.com/l/fromphptopython"
     }
   ]
 }
