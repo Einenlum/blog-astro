@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    { 
+      "source": "/this-is-a-test",
+      "destination": "https://github.com/vercel/vercel", 
+      "permanent": false
+    }
+  ]
+}
