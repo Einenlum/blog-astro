@@ -12,9 +12,9 @@
         "destination": "https://einenlum.gumroad.com/l/fromphptopython"
     },
     {
-        "source": "/books/fromphptopython/sample-chapters/pattern-matching.pdf",
+        "source": "/books/fromphptopython/sample-chapters/match-case.pdf",
         "permanent": true,
-        "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/pattern-matching.pdf"
+        "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/match-case.pdf"
     },
     {
         "source": "/books/fromphptopython/sample-chapters/regexes.pdf",
