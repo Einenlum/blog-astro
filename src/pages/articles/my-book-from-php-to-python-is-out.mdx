@@ -1,0 +1,43 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+import NonSourcedImage from '../../components/non-sourced-image.astro';
+
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 4, 9);
+export const description =
+  'After two years of work, my book is finally released.';
+export const title = 'My book - From PHP to Python - is out!';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+For those who follow this blog, you may have noticed that my TWIL (This Week I Learned) posts have been missing the past few weeks. It might seem as if I gave up on this blog, but it's not the case…
+
+I have been working for two years on a book called _From PHP to Python_, teaching Python to PHP developers. **I'm so relieved and excited to write these words: it's finally OUT! You can buy it on Gumroad [here](https://fromphptopython.com)**.
+
+<NonSourcedImage
+  src="https://res.cloudinary.com/dybam16gk/image/upload/c_scale,h_1500/Jwgf-POp-V-4x-final_zqemf1.jpg"
+  alt="The cover of my book From PHP to Python"
+></NonSourcedImage>
+
+## The Approach
+
+**I wanted this book to be as straight-to-the-point as possible.** I focus in this book only on what's different from PHP. Is it similar? Let's say it's similar and move on. Is it different? Let's dive into it. Therefore some chapters are super short (the one about exceptions for example) and some are way longer (the one about async programming).
+
+## Why it took so long to get published
+
+Most of the book was already written in the summer of 2022. Of course, there were incremental changes since then, but the gist of it was already there. I tried to get published by a "real" publisher for some time and this is what took me months.
+
+It was such a hard process: sending huge forms (all different) sometimes including things I had not anticipated. Some publishers even asked about the state of competition on the market and why I was convinced my book had an audience. I thought it was the publisher's work to do this, so it was quite a lot of work I was not prepared for.
+
+**I finally found a publisher who I signed with**. The people I met were nice however I realized it was not what I wanted for my book. I needed full control of the book, and I wanted some features that most publishers could not afford, like having syntax highlighting. **It was a hard decision to make, but I decided to cancel the contract and to self-publish**. I really appreciated the fact that the publisher understood my situation and let me go. If this publisher is reading this, I want to thank them again for their understanding and kindness (especially you, Mark).
+
+I wanted to do everything by myself and it was not that easy. I'll make another post soon, explaining how I technically built my ebook in PDF.
+
+## What's next?
+
+Well, right now I can already relax and enjoy the fact I finally managed to finish this project. I will check feedback from my readers and see if I need to make any changes. Maybe I can finally focus on other things for now (like learning Typescript and Rust).
+
+_Thanks again to [Olivier Philippon](https://devblog.dunsap.com/) for having answered so many of my questions about Python during the writing of this book ❤️._
+
+</ArticleLayout>
