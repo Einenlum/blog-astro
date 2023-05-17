@@ -1,0 +1,31 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 4, 17);
+export const description = 'TWIL about PHP, HTTP and CSS.';
+export const title = 'This Week I Learned: 2023W18';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## PHP - PHPStan
+
+I wondered recently how I could detect all the unused methods in my PHP projects. That could be quite useful when refactoring old code.
+
+I found a PHPStan extension from Tomas Votruba, the creator of Rector: [unused-public](https://tomasvotruba.com/blog/can-phpstan-find-dead-public-methods/).
+
+This can detect unused methods, properties and/or constants. Amazing tool. Thanks Tomas!
+
+## HTTP Status Codes
+
+I knew the 301 and 302 status codes already (respectively permanent and temporary redirection). I didn't know the 308 and 307 which are the respective equivalents but stricter.
+
+Indeed, when redirecting with a 301 or 302, the browser generally tries to redirect to the new URL by using a GET request. With 308 (permanent) and 307 (temporary), the browser will use the same method as the original request as well as the same body.
+
+I found out about this through the vercel documentation. You can also check [this article](https://www.drlinkcheck.com/blog/http-redirects-301-302-303-307-308).
+
+## CSS
+
+To select all `p` tags hot having a class, you can use `p:not([class])`.
+
+</ArticleLayout>
