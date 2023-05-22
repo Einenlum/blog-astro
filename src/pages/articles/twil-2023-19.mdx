@@ -1,0 +1,117 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 4, 23);
+export const description = 'TWIL about Vim, Distrobox and PHPUnit.';
+export const title = 'This Week I Learned: 2023W19';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+## Vim
+
+I realized recently that when I was commenting PHP lines (with `gc`), my Vim was using multiline comments for each line.
+
+Before:
+
+```php
+private function myFunc(): void
+{
+    $this->doSomething();
+    $this->doSomethingElse();
+}
+```
+
+After:
+
+```php
+private function myFunc(): void
+{
+    /* $this->doSomething(); */
+    /* $this->doSomethingElse(); */
+}
+```
+
+The problem appears on huge portions of code that I commented in some code and that my colleague using PHPStorm had to uncomment.
+
+Thanks to Mastodon and especially to the user [Normal Mode](https://fosstodon.org/@normalmode@mastodon.social/110345093162789213) I found the solution.
+
+In `.config/nvim/after/ftplugin/php.vim` I added:
+
+```
+setlocal commentstring=//%s
+```
+
+Now it works as expected (as well as uncommenting):
+
+```php
+private function myFunc(): void
+{
+    // $this->doSomething();
+    // $this->doSomethingElse();
+}
+```
+
+## Distrobox
+
+[Distrobox](https://github.com/89luca89/distrobox) is quite a fascinating tool. It is a fancy wrapper around docker (or podman) that allows you running any binary in any linux distro, from your CLI.
+
+I still struggle to understand some concepts but it sounds quite fun.
+
+## PHPUnit
+
+Until now, PHPUnit had a `withConsecutive` method on mocks that allowed specifying which arguments your mock should receive, depending on the invocation counter. This has been deprecated and will be removed in a later version.
+
+You can read more about this topic in [this issue](https://github.com/sebastianbergmann/phpunit/issues/4026).
+
+It seems like someone said they were confused by how it worked and the decision was made to remove it. The first problem I see here is that there is no replacement method provided. This used to work for so long and now we have to make our code longer and weird to solve the same problem PHPUnit used to solve.
+
+```php
+$getGroupsExpectations = [
+    ['spa', FakeApiResponse::json(200, [])],
+    ['dep', FakeApiResponse::json(200, [['id' => 1]])],
+    ['spa', FakeApiResponse::json(200, [['id' => 6]])],
+];
+$getGroupsMatcher = $this->exactly(3);
+$gitlabClient
+    ->expects($getGroupsMatcher)
+    ->method('getGroups')
+    ->willReturnCallback(function(array $parameters) use ($getGroupsMatcher, $getGroupsExpectations) {
+        $count = $getGroupsMatcher->getInvocationCount();
+        [$path, $response] = $getGroupsExpectations[$count-1];
+
+        $this->assertEquals($path, $parameters['search']);
+
+        return $response;
+    });
+```
+
+Which could have been before:
+
+```php
+$getGroupsExpectations = [
+    ['spa', FakeApiResponse::json(200, [])],
+    ['dep', FakeApiResponse::json(200, [['id' => 1]])],
+    ['spa', FakeApiResponse::json(200, [['id' => 6]])],
+];
+$getGroupsMatcher = $this->exactly(3);
+$gitlabClient
+    ->expects($getGroupsMatcher)
+    ->method('getGroups')
+    ->withConsecutive([
+        ['search' => 'spa'],
+        ['search' => 'dep'],
+        ['search' => 'spa'],
+    ])
+    ->willReturnOnConsecutiveCalls(
+        FakeApiResponse::json(200, []),
+        FakeApiResponse::json(200, [['id' => 1]]),
+        FakeApiResponse::json(200, [['id' => 6]]),
+    );
+```
+
+The second issue is that I don't get the motivation. Sebastian Bergmann wrote a blog post called ["Do not mock what you do not own"](https://thephp.cc/articles/do-not-mock-what-you-do-not-own). I know this mantra and I don't know what this has to do with this feature.
+
+In my team we currently have an interface for the Gitlab client you see in the code above. Even the implementation is a wrapper of the HttpClient and it returns a custom DTO response. I don't see the link. Even when using your interfaces, you're still sometimes dependent on a specific order of calls, unfortunately. It's not great in theory, indeed, but it happens in the real world.
+
+</ArticleLayout>
