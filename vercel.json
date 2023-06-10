@@ -14,12 +14,12 @@
     {
         "source": "/books/fromphptopython/sample-chapters/match-case.pdf",
         "permanent": true,
-        "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/1.0/match-case.pdf"
+        "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/1.1/match-case.pdf"
     },
     {
         "source": "/books/fromphptopython/sample-chapters/regexes.pdf",
         "permanent": true,
-        "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/1.0/regexes.pdf"
+        "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/1.1/regexes.pdf"
     }
   ]
 }
