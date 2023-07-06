@@ -1,0 +1,90 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+import NonSourcedImage from '../../components/non-sourced-image.astro';
+
+export const publishedAt = new Date(2023, 6, 6);
+export const description = 'Fzf-lua is a must-have plugin.';
+export const title = 'How to preview colorschemes in Neovim';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+I know that [telescope](https://github.com/nvim-telescope/telescope.nvim) is a very popular fuzzy finder in the Neovim world. The fact that it was built by the main core maintainer of Neovim probably plays a role.
+
+It's well thought but I have to say I prefer a less-known alternative: [fzf-lua](https://github.com/ibhagwan/fzf-lua). It adds some dependencies (like [fzf](https://github.com/junegunn/fzf) which is mandatory or a few optional ones like [bat](https://github.com/sharkdp/bat) and [ripgrep](https://github.com/BurntSushi/ripgrep)) but since I already use all of them daily, it's not a problem for me. I experienced `fzf-lua` to be way faster than `telescope`.
+
+Another super important feature for me is the ability to preview colorschemes (which is not possible in `telescope`).
+
+To do so, just launch `:FzfLua colorschemes` or bind it to a key.
+
+In my Lua config, I mapped it to Ctrl J:
+
+```lua
+local map = vim.api.nvim_set_keymap
+
+map("n", "<C-j>", "<Esc>:FzfLua colorschemes<CR>", {})
+
+-- other cool features
+-- map("n", "<C-p>", "<Esc>:FzfLua files<CR>", {})
+-- map("n", "<C-o>", "<Esc>:FzfLua buffers<CR>", {})
+-- map("n", "<C-h>", "<Esc>:FzfLua command_history<CR>", {})
+-- map("n", "<C-w>", "<Esc>:FzfLua builtin<CR>", {})
+-- map("n", "<Leader>f", "<Esc>:FzfLua live_grep_native<CR>", {})
+```
+
+Now when using Ctrl J, I get a preview of all my colorschemes.
+
+<NonSourcedImage
+  src="https://res.cloudinary.com/dybam16gk/image/upload/v1688659468/blog_images/catpuccin_jrnk6w.png"
+  alt="The catpuccin theme"
+></NonSourcedImage>
+
+<NonSourcedImage
+  src="https://res.cloudinary.com/dybam16gk/image/upload/v1688659468/blog_images/everforest_ca1hxd.png"
+  alt="The everforest theme"
+></NonSourcedImage>
+
+If I press enter, the colorscheme is applied, of course. If I press `ESC` it applies my previous colorscheme back.
+You can now have a colorscheme preview feature as you would have in VS Code and other tools.
+
+## How to exclude some colorschemes from the list
+
+Everything works perfectly, but Neovim installs a few ugly colorschemes by default, which means I have them in the list and I don't want to stumble upon them.
+
+[ibhagwan](https://github.com/ibhagwan), the creator of `fzf-lua` implemented a way to exclude some colorschemes from the list, [only a few hours after I asked about it](https://github.com/ibhagwan/fzf-lua/issues/810) (!). Another reason to love this plugin.
+
+Here is what I added to my lua config:
+
+```lua
+require('fzf-lua').setup{
+  colorschemes = {
+    ignore_patterns = {
+        "^blue$",
+        "^darkblue$",
+        "^default$",
+        "^delek$",
+        "^desert$",
+        "^elflord$",
+        "^evening$",
+        "^habamax$",
+        "^industry$",
+        "^koehler$",
+        "^lunaperche$",
+        "^morning$",
+        "^murphy$",
+        "^pablo$",
+        "^peachpuff$",
+        "^quiet$",
+        "^ron$",
+        "^shine$",
+        "^slate$",
+        "^torte$",
+        "^zellner$",
+    }
+  }
+}
+```
+
+This requires the `758d4ddb2a94` commit that appeared on July, 5th 2023. Think about updating your plugin.
+
+</ArticleLayout>
