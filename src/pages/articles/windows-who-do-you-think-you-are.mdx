@@ -1,0 +1,36 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 6, 10);
+export const description = "My BIOS doesn't belong to you.";
+export const title = 'Windows, who do you think you are?';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+I'm a Linux person. It makes me happy. I have my [dotfiles](https://github.com/Einenlum/dotfiles-manjaro) which allow me to make my system ready in minutes, I can configure it exactly as I want… It's just perfect for me.
+
+I'm a developer and I don't use any Adobe stuff or play video games. On a daily basis, Linux gives me everything I want.
+I still need it though for very specific things once in a while. This is why I keep it as a dual boot on my laptop.
+
+Since I'm building an ePub file (more on this in a later chapter) I need to check how it behaves on many devices. Amazon provides a [Kindle Previewer](https://kdp.amazon.com/en_US/help/topic/G202131170) supposed to show you how your ePub will look on a Kindle. It's unfortunately not available on Linux.
+
+## Windows is on autopilot
+
+I was in a hurry and after having the confirmation that Kindle readers are a nightmare (thank you Amazon), I needed to reboot my system for the 12th time today, to go back to my beloved OS. After clicking on the Start button, it appeared that my only three choices were "Sleep", "Update and reboot" and "Update and shutdown".
+
+I already hate it when a system is so inflexible and bossy that it chooses exactly when to perform updates. I agree, some updates should be mandatory but giving a few days or hours at least to perform them seems quite reasonable.
+
+Fair enough. I know I will waste 10 min although it's the worst time for me. Let's go for "Update and reboot". I'm quite used to it.
+
+Here is where I lost it. Windows didn't just update itself. It rebooted and did a **BIOS update**.
+
+What the hell?
+
+- First: you never told me.
+- Second: what would happen if I were on low battery? It could have broken my machine.
+- Third: excuse me, are you the only system here? I don't think so. You're not the master.
+
+**You're a guest. Work on this assumption.**
+
+</ArticleLayout>
