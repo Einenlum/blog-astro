@@ -1,0 +1,84 @@
+import Layout from '../layouts/layout.astro';
+import MastodonLink from '../components/mastodon-link.astro';
+import { components as MarkdownComponents } from '../components/markdown-components.astro';
+import NonSourcedImage from '../components/non-sourced-image.astro';
+export const components = MarkdownComponents;
+
+<Layout title="Einenlum - From PHP to Python: A Straight-to-the-Point Guide" description="My first book has been released.">
+    # Book
+
+    I released my first book, __From PHP to Python: A Straight-to-the-Point Guide__ in May 2023.
+
+    <NonSourcedImage
+    src="https://res.cloudinary.com/dybam16gk/image/upload/v1689543405/blog_images/cover_i96zut.jpg"
+    alt="The cover of my book From PHP to Python"
+    ></NonSourcedImage>
+
+    It's the best shortcut to learn Python if you already know PHP. It was written with senior PHP developers in mind.
+    After reading the book you will be able to write Python code, write tests, learn a Python web framework like Django, and contribute to Python open-source projects.
+
+    ## The approach
+
+    - No bullshit. You know what a variable, a for loop, or an object is. **We will only focus on what's different.** The book is written in a concise and straight-to-the-point style.
+    - The book shows **PHP** and **Python** code **side-by-side** to help you quickly understand what's going on (PHP code and Python code are highlighted differently to keep things clear).
+    - It is built to be read in order and to give you all you need to master Python in a web-oriented approach.
+
+    ## Where can I buy it?
+
+    The book is available on [Gumroad](https://fromphptopython.com) in PDF and ePub, and on [Amazon](https://a.co/d/69A8gUg) in Kindle version.
+
+    To be honest, you have all the reasons to buy it on Gumroad because you will get the PDF and ePub versions which are cleaner. Also, I activated the [Purchasing Power Parity](https://help.gumroad.com/article/327-purchasing-power-parity) feature there so there are chances you can buy it cheaper, and I earn more on Gumroad than on Amazon.
+
+    ## Table of contents
+
+    - Introduction
+    - Before we start
+    - Language Syntax
+    - Data Types
+    - Positional and keyword arguments
+    - Unpacking
+    - Comprehensions
+    - Local and global variables
+    - Classes and Objects
+    - Objects, objects… objects everywhere!
+    - == and is explained
+    - Imports, Modules and Packages
+    - Exceptions
+    - Working with strings
+    - Datetimes
+    - **[Match case](/books/fromphptopython/sample-chapters/match-case.pdf)** _Free chapter!_
+    - **[Working with regexes](/books/fromphptopython/sample-chapters/regexes.pdf)** _Free chapter!_
+    - Magic methods
+    - Lamdbas
+    - Documenting and Debugging Your Code
+    - Decorators
+    - Context Manager
+    - Generators
+    - Managing dependencies with pip
+    - Let's add some poetry
+    - Monkey patching
+    - Testing with unittest
+    - Testing with Pytest
+    - Typehints
+    - Enums
+    - Interacting with the filesystem
+    - Working with environment variables
+    - Logging
+    - Interacting with CLI
+    - Walrus operator
+    - DTOs in Python
+    - Mixins
+    - Interfaces
+    - Serializing
+    - Standard lib and interesting modules
+    - Publishing a package
+    - Interacting with databases
+    - Async
+    - PEP ?
+    - Web frameworks
+    - WSGI and Servers
+    - Tooling and Linting
+    - Python Culture
+    - Lexicon
+
+</Layout>
