@@ -7,16 +7,16 @@ import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
-import sitemap from "@astrojs/sitemap";
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), mdx(), sitemap()],
   markdown: {
     shikiConfig: {
-      theme: 'min-dark',
-      wrap: true
-    }
+      theme: 'nord',
+      wrap: true,
+    },
   },
-  site: 'https://www.einenlum.com'
+  site: 'https://www.einenlum.com',
 });
