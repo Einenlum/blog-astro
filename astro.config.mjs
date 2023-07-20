@@ -11,12 +11,18 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind(), mdx(), sitemap()],
+  integrations: [
+    tailwind({
+      applyBaseStyles: false,
+    }),
+    mdx(),
+    sitemap(),
+  ],
   markdown: {
     shikiConfig: {
       theme: 'nord',
       wrap: true,
     },
   },
-  site: 'https://www.einenlum.com',
+  site: 'https://www.einenlum.com/',
 });
