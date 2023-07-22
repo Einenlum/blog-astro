@@ -36,6 +36,5 @@
 }
 
 .pagefind-ui__search-input:focus, .pagefind-ui__search-input:active, .pagefind-ui__search-input:focus-visible {
-    /* @apply border-pink-900 dark:border-indigo-200 !important; */
     outline: unset !important;
 }
