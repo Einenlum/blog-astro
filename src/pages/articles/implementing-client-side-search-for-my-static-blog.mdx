@@ -1,0 +1,306 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 6, 22);
+export const description = 'It was quite easy to do thanks to Pagefind.';
+export const title = 'Implementing client-side search for my static blog';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+I wrote about it [here](/articles/goodbye-nextjs-hello-astro/), my blog is generated through Astro. I love it because I can build my blog using components and Tailwind, and still have no JS served to my readers.
+
+I wrote a few TWIL (This Week I Learned) articles, and I sometimes wonder if it's worth it for people. I probably don't describe enough what the article talks about and it's hard to find a specific article talking about some topic.
+
+It's been a few months since I have been thinking about adding a search feature to my blog, but I never took the time to do it. My blog is generated statically and served on Vercel, so adding a search feature is not that simple. You either need to use a third party like Algolia, or to use a package you provide yourself after having built the index.
+
+I stumbled upon [this article](https://grumpy-learning.com/blog/2023/02/10/adding-search-to-a-static-blog/) from Chris Hartjes, who had the same goal and it allowed me to add a working search feature to this blog in just a couple hours. Shout out to him!
+
+I struggled a bit with how implement this with Astro and Tailwind so this blog post shows step by step my journey, hoping it can be useful to someone.
+
+## Pagefind
+
+The open-source tool we will use here is called [Pagefind](https://pagefind.app/). Written to be super fast and efficient, it allows (according to its author) to quickly build an index and search through tens of thousands of pages in the browser. [Here is a very well-made presentation from the author](https://pagefind.app/) I recommend you to check out.
+
+## Installation
+
+```
+yarn add pagefind
+```
+
+We will first build the astro static website (since Pagefind operates on the HTML generated files):
+
+```
+npm run build
+```
+
+And we can then run Pagefind to build our index, specifying our `dist` folder (the one that astro creates for the static files):
+
+```
+npx pagefind --source dist
+```
+
+And _voila_! We have a an index built automatically in `dist/_pagefind`. How easier could this be?
+
+Pagefind can read a `pagefind.yml` file to avoid passing arguments to the CLI. I created one in my root folder:
+
+```yaml
+# pagefind.yml
+source: dist
+bundle_dir: _pagefind
+```
+
+If you want Pagefind to spaw a webserver with your static files for you to do some tests, you can use the `--serve` flag.
+
+```
+npx pagefind --source dist --serve
+```
+
+I also decided to add Pagefind to my `build` command inside my `package.json` so that every time Vercel builds the website it also generates the index.
+
+```json
+{
+  // ...
+  "scripts": {
+    // ...
+    "build": "astro build && pagefind"
+    // ...
+  }
+  // ...
+}
+```
+
+Now every time I run `npm run build` my index is automatically generated.
+
+Pagefind provides an already-made UI with a form on their website. We first need to load its JS and CSS files. Since I only wanted to add these to my page search, I added a prop to my layout to know if I should include these files are not. It's probably not the best way to achieve this, but hey, I'm not an expert.
+
+```astro
+---
+// src/layouts/layout.astro
+
+import Header from '../components/header.astro';
+import FeedLink from '../components/feed-link.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  // should we include search links?
+  includeSearch?: boolean;
+}
+
+const { title, description, includeSearch } = Astro.props as Props;
+---
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link rel="shortcut icon" href="/favicon.png" />
+    <!-- here we include them if needed -->
+    {
+      includeSearch && (
+        <>
+          <link href="/_pagefind/pagefind-ui.css" rel="stylesheet" />
+          <script src="/_pagefind/pagefind-ui.js" type="text/javascript" />
+        </>
+      )
+    }
+
+    <!-- ... ->
+	</head>
+	<body class="dark:bg-neutral-900 dark:text-amber-50">
+		<!-- ... ->
+	</body>
+</html>
+--></head
+  >
+</html>
+```
+
+Then on my search page:
+
+```astro
+---
+import Layout from '../layouts/layout.astro';
+import PageTitle from '../components/page-title.astro';
+---
+
+<Layout
+  title="Einenlum - Search"
+  description="Search for articles."
+  includeSearch={true}
+>
+  <div class="mb-8">
+    <PageTitle>Search for articles</PageTitle>
+  </div>
+
+  <div id="search"></div>
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({ element: '#search' });
+    });
+  </script>
+</Layout>
+```
+
+We already have a working search. Incredible!
+
+## Customizing the appearance
+
+I didn't want images to appear in the result list. So I added this to my JS on my search page:
+
+```javascript
+window.addEventListener('DOMContentLoaded', (event) => {
+  new PagefindUI({ element: '#search', showImages: false });
+});
+```
+
+The most complicated part for me was to understand how to customize the theme. I first needed to find the classes I needed to change. I checked the web inspector to know which ones were used.
+
+The problem I had was that I wanted to apply Tailwind classes to them because I didn't want to use hexadecimal codes for colors instead of the Tailwind classes I used elsewhere. This would bring some confusion.
+
+I needed a custom CSS file that was parsed by Tailwind. To do so, I first needed to disable Tailwind global styling (to be able to use a custom Tailwind CSS file).
+
+In my `astro.config.mjs` file, I added the following to my Tailwind integration:
+
+```javascript
+// ...
+export default defineConfig({
+  integrations: [
+    tailwind({
+      applyBaseStyles: false,
+    }),
+    // ...
+  ],
+  // ...
+});
+```
+
+I then added a `src/styles/global.css` file
+
+```css
+/* src/styles/global.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The word that is looked for and highlighted in the results */
+.pagefind-ui--reset mark,
+mark {
+  @apply bg-indigo-200 !important;
+}
+
+.pagefind-ui__result-tag {
+  @apply text-black;
+}
+
+.pagefind-ui__result,
+.pagefind-ui__result-title,
+.pagefind-ui__result-link {
+  @apply dark:text-amber-50 !important;
+}
+
+.pagefind-ui__message {
+  @apply text-black dark:text-amber-50 !important;
+  @apply font-normal !important;
+}
+
+.pagefind-ui__result-link {
+  @apply text-pink-900 !important;
+  @apply hover:text-pink-700 !important;
+  @apply dark:text-indigo-200 !important;
+  @apply transition !important;
+  @apply ease-in-out !important;
+  @apply delay-150 !important;
+  text-decoration: none !important;
+}
+
+.pagefind-ui__search-input {
+  @apply border border-pink-900 dark:border-indigo-200 !important;
+  @apply font-normal !important;
+  @apply font-sans !important;
+}
+
+.pagefind-ui__search-input:focus,
+.pagefind-ui__search-input:active,
+.pagefind-ui__search-input:focus-visible {
+  outline: unset !important;
+}
+```
+
+And added this line to my `src/layouts/layout.astro` file.
+
+```javascript
+import '../styles/global.css';
+```
+
+This way I was able to use the @apply directive from Tailwind, which is very handy. I also added `!important` tags since Pagefind CSS declarations are quite precise and could sometimes override mine.
+
+It finally matched my theme.
+
+## The last tweaks
+
+Pagefind by default takes the first `h1` tag on every page to show them as the title in the result list. Every page of mine had my name (Einenlum) as an `h1` in my Layout, which caused every result to have my name as the title. I changed it to a `div` (which is probably better for my SEO performance anyway - the title of my article should be the only `h1` on the page).
+
+I needed another tweak to make only my articles referenced in the index. To do so, you can add the `data-pagefind-body` attribute to some elements. If only one is present in the project, then Pagefind will discard every HTML part that doesn't have this attribute.
+
+I added it to my `src/layouts/article-layout.astro` file.
+
+```astro
+---
+import ArticleHeader from '../components/article-header.astro';
+import Layout from './layout.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  publishedAt: Date;
+}
+
+const { title, description, publishedAt } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <!-- Pagefind will only look for articles now -->
+  <div data-pagefind-body>
+    <ArticleHeader title={title} publishedAt={publishedAt} />
+
+    <slot />
+  </div>
+</Layout>
+```
+
+Now only my articles are present in the index.
+
+Another thing is that I wanted Pagefind to show the publication date of an article in the result. To do that you can use the `data-pagefind-meta` attribute, set to `"date"`, on an HTML tag containing your date.
+
+I added this to my `src/components/article-header.astro` file.
+
+```astro
+---
+interface Props {
+  publishedAt: Date;
+  title: string;
+}
+
+const { publishedAt, title } = Astro.props as Props;
+---
+
+<div class="...">
+  <h1 class="...">{title}</h1>
+  <p class="..." data-pagefind-meta="date">{publishedAt.toDateString()}</p>
+</div>
+```
+
+Now the date appears in the result automatically. Magical.
+
+## Conclusion
+
+I thought adding a client-side search to a static website would be way more complicated than that. The performance is amazing and I don't have to worry about my index anymore. Every new article will be added automatically to the index and be searchable.
+
+You can check my commit adding these changes, [here](https://github.com/Einenlum/blog-astro/commit/f80333de9d5e97161f6faacd63ab0ef8ad389018).
+
+Thanks Pagefind!
+
+</ArticleLayout>
