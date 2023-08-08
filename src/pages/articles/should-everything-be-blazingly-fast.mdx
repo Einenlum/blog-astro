@@ -1,0 +1,43 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+export const components = MarkdownComponents;
+
+export const publishedAt = new Date(2023, 7, 8);
+export const description =
+  "Fast seems to be the new trend. Are we sure it's always worth it?";
+export const title = 'Should everything be blazingly fast?';
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Devs love trends. We know that.
+
+A trend I have seen for the last two years is to rewrite everything in Rust. Rust has some advantages: it's fast and one could say that (thanks to its ownership and borrow checker system) it gives a good sense of safety.
+
+It also has downsides: although some people say "it's not harder, it's just different" (like [here](https://www.youtube.com/watch?v=06CVZKbNvgE&pp=ygUPbGV0J3MgZ2V0IHJ1c3R5) and [there](https://www.youtube.com/watch?v=06CVZKbNvgE&pp=ygUPbGV0J3MgZ2V0IHJ1c3R5)), as a developer with 10 years of experience, I feel it's one of the most complicated languages I have tried to learn. I think the entry level is quite high compared to many other languages and rewriting your open-source project in Rust means you probably have fewer potential contributors rather than with, say, Typescript or Python.
+
+I was looking for a colorscheme generator for Neovim today, and found this project: [colorgen-nvim](https://github.com/LunarVim/colorgen-nvim). The program takes a `toml` file as input (a template), and generates a colorscheme for Neovim, compatible with TreeSitter.
+
+In other words, it takes a text input and returns a text output (split in 3 or 4 files). **Once**.
+
+I'm really glad and thankful this project exists, and it could be written in Python, Rust or Ruby, I don't mind. But something in the description of the project confused me.
+
+"_**Blazingly fast** colorscheme generator for Neovim written in Rust_".
+
+When did "blazingly fast" become the first quality for something that takes text as input and returns text as output, that you use once every 6 months?
+
+I obviously understand that speed is critical for some systems, and even for some tools: I'm glad [ripgrep](https://github.com/BurntSushi/ripgrep) is written in Rust and is so fast. I use it several times every day and it's amazing to get all results almost instantaneously.
+
+I want my Neovim to be fast.<br />
+I want my everyday tools to be fast.<br />
+I want my Terminal to be fast.<br />
+I'm always happy when my web framework gets some speed improvement.
+
+A translator/generator I use once in a while? As soon as it generates something in less than 2 or 3 seconds, as soon as I don't get frustrated with its slowness, I don't mind.
+
+I'll be honest, you could have forgotten a `sleep(0.5)` function call somewhere in the program, I would have probably not seen it.
+
+This is not to blame or criticize the great work of the [LunarVim](https://github.com/LunarVim) team. I'm really thankful for their tools. I'm just skeptical about this new shiny trend that doesn't make sense to me.
+
+**If it wouldn't make sense to add a benchmark in your README, then speed is probably not the first quality I'm looking for in your tool.**
+
+</ArticleLayout>
