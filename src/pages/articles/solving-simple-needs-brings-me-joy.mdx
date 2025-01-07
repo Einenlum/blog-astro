@@ -1,0 +1,47 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+
+export const publishedAt = new Date(2025, 0, 7);
+export const description = "An article about pinball machines, APIs, and bringing a silly bar idea to life.";
+export const title = 'Solving simple needs brings me joy';
+export const components = MarkdownComponents;
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+Pinballs have been a passion of mine for two years now. Every time I have some free time, I go to a bar close by and try to beat my high score. I even created a [web app](https://github.com/Einenlum/pinball-friends) to keep track of our scores with my friends.
+
+I regularly check different apps to see all the pinballs around me. As I was playing the other day, I thought it was a shame I didn't get any notification when a pinball was added or replaced in my area (most bars rent their pinball machines to a dedicated company and they change them every few months).
+
+What if I could get a notification when the pinballs around me have changed? I could get an email (and my friends too) when something happened in my region.
+
+I took the most used app in my country (I will not name it here for obvious reasons but it's easy to guess) and started to think about their API. Luckily, they also have a website and I could see the requests they were making to get the data. I actually even found their OpenAPI documentation (I guess someone forgot to make it private).
+
+In two days I was able to make a small app with Laravel. Every day, it looks for the locations in the app. It filters them to only take the ones in my region.
+
+I then trigger a queue job to check the pinballs in this location. If the ones I get are different from the ones I have stored, I can trigger a diff event and send an email showing the diff. I store every new update in a specific table, so that I can also track the changes over time (and why not make some cool statistics later).
+
+I also added a small message ("_(new in town!)_") when the pinball machine has never been seen before.
+
+I then realized I could actually use a Telegram bot to send notifications to a private chat group, where I have invited all my pinball friends.
+
+To avoid spamming the API (and reduce the risk of getting caught and banned), I delayed all my jobs to a random time between now and two hours later. Laravel makes it really easy:
+
+```php
+FetchVenueDetail::dispatch()
+    ->delay(now()->addSeconds(rand(0 * 60, 120 * 60)));
+```
+
+This allows me to send a few calls per day in a random time frame, which seems very acceptable to me (especially since I'm not making any money with this and keep it private for my friends).
+I also used the same headers they use in their app, and used a fake user agent for every request.
+
+I decided to use [Coolify](https://coolify.io) to host my app on a Hetzner server I control. The deployment was probably the most complicated part of the project since I suck at docker (Btw, I may have an idea for a future project to make this easier. It might be my next project), but in a few hours it was up.
+
+This morning, I got the notification I expected.
+
+Someone between yesterday and this morning added a new pinball machine in a bar close to my place. A pinball machine I never played before.
+
+As developers, we sometimes forget how lucky we are to be able to implement an idea in a few days and see it running. Something useful to us and our friends. Something probably silly and useless to most humans, but something that makes us happy.
+
+This notification made my day.
+
+</ArticleLayout>
