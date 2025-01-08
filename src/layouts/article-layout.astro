@@ -7,10 +7,11 @@ export interface Props {
 	title: string,
 	description: string,
     publishedAt: Date,
-    hackerNewsUrl?: string,
+    existingHackerNewsUrl?: string,
 }
 
-const { title, description, publishedAt, hackerNewsUrl } = Astro.props;
+const { title, description, publishedAt, existingHackerNewsUrl } = Astro.props;
+const hackerNewsUrl = existingHackerNewsUrl || `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(Astro.url)}&t=${encodeURIComponent(title)}`;
 ---
 
 <Layout title={title} description={description}>
@@ -18,13 +19,12 @@ const { title, description, publishedAt, hackerNewsUrl } = Astro.props;
     <div data-pagefind-body>
         <ArticleHeader title={title} publishedAt={publishedAt} />
 
-        {hackerNewsUrl && (
-            <div class="mt-4 mb-10 text-sm" data-pagefind-ignore="all">
-                <div class="text-right">
-                    <p>Discuss this article on <ALink href={hackerNewsUrl}>Hacker News</ALink>.</p>
-                </div>
+
+        <div class="mt-4 mb-10 text-sm" data-pagefind-ignore="all">
+            <div class="text-right">
+                <p>Discuss this article on <ALink href={hackerNewsUrl}>Hacker News</ALink>.</p>
             </div>
-        )}
+        </div>
 
         <slot />
 
