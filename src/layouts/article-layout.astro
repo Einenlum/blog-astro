@@ -29,7 +29,7 @@ const hackerNewsUrl = existingHackerNewsUrl || `https://news.ycombinator.com/sub
         <slot />
 
         {hackerNewsUrl && (
-            <div class="my-10 text-sm" data-pagefind-ignore="all">
+            <div class="mt-10 sm:mt-20 text-sm" data-pagefind-ignore="all">
                 <div class="text-center">
                     <p>Discuss this article on <ALink href={hackerNewsUrl}>Hacker News</ALink>.</p>
                 </div>
