@@ -38,3 +38,19 @@
 .pagefind-ui__search-input:focus, .pagefind-ui__search-input:active, .pagefind-ui__search-input:focus-visible {
     outline: unset !important;
 }
+
+/*
+ * code not in pre
+ *
+ * I had to include this in the CSS instead of
+ * using a proper markdown component because I need
+ * to exclude code blocks that are in pre tags.
+ */
+code:not(pre code) {
+    @apply bg-gray-200;
+    @apply dark:bg-gray-300;
+    @apply text-black;
+    @apply px-1;
+    @apply rounded-sm;
+    @apply font-mono;
+}
