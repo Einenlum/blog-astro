@@ -1,5 +1,6 @@
 ---
 import ALink from './a-link.astro';
+import ImageLegend from './image-legend.astro';
 
 function getLicense(license: string|undefined): string {
     if (!license) {
@@ -19,7 +20,7 @@ interface Props {
 const {author, imageName, license, source} = Astro.props as Props
 ---
 
-<div class="max-w-sm mx-auto text-sm lg:text-base">
+<ImageLegend>
     {imageName
     ? <p class="text-center mx-auto">
         <span class="italic">
@@ -27,4 +28,4 @@ const {author, imageName, license, source} = Astro.props as Props
         </span> by {author} {getLicense(license)}
     </p>
     : <p class="mx-auto text-center">Image by <ALink href={source}>{author}</ALink> {getLicense(license)}</p>}
-</div>
+</ImageLegend>
