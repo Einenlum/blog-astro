@@ -2,6 +2,7 @@
 import Header from '../components/header.astro';
 import FeedLink from '../components/feed-link.astro';
 import '../styles/global.css';
+import '@fontsource-variable/open-sans';
 
 export interface Props {
 	title: string,
@@ -37,7 +38,7 @@ const { title, description, includeSearch } = Astro.props as Props;
 		<meta charset="UTF-8"> 
 		<title>{title}</title>
 	</head>
-	<body class="dark:bg-neutral-900 dark:text-amber-50">
+	<body class="dark:bg-neutral-900 dark:text-amber-50 font-sans">
 		<div class="mx-auto px-2 md:px-0 sm:max-w-2xl 2xl:max-w-3xl mb-20 lg:mb-40 xl:mb-60">
 			<Header />
 			<slot />
