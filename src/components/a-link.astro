@@ -25,6 +25,6 @@ if (additionalClasses) {
 
 <a
     href={href}
-    class:list={[new Set(classlist)]}
+    class:list={[...new Set(classlist)]}
     rel={rel}
 ><slot /></a>
