@@ -13,7 +13,7 @@ module.exports = {
       },
       fontFamily: {
         comic: ['Comic Sans MS', 'Comic Sans', 'cursive'],
-        sans: ['Cantarell', ...defaultTheme.fontFamily.sans],
+        sans: ['Public Sans Variable', ...defaultTheme.fontFamily.sans],
       },
     },
   },
