@@ -6,7 +6,7 @@ interface Props {
 
 const { publishedAt, title } = Astro.props as Props;
 ---
-<div class="mt-10 mb-8 xl:mb-10 py-6 pl-6 align-bottom border-l-4 border-l-pink-900">
+<div class="mt-10 mb-8 xl:mb-10 py-6 pl-2 sm:pl-6 align-bottom border-l-4 border-l-pink-900">
     <h1 class="text-lg md:text-xl font-sans tracking-wide md:tracking-wider">{title}</h1>
     <p class="justify-end mt-4 text-gray-700 dark:text-gray-400" data-pagefind-meta="date">{publishedAt.toDateString()}</p>
 </div>
