@@ -54,3 +54,19 @@ code:not(pre code) {
     @apply rounded-sm;
     @apply font-mono;
 }
+
+ol {
+    @apply list-decimal !important;
+}
+
+li {
+    @apply ml-6 my-2 md:text-lg;
+}
+
+ul > li {
+    @apply list-disc;
+}
+
+ol > li {
+    @apply list-decimal;
+}
