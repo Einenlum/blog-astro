@@ -377,10 +377,10 @@
   resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.18.14.tgz"
   integrity sha512-TBgStYBQaa3EGhgqIDM+ECnkreb0wkcKqL7H6m+XPcGUoU4dO7dqewfbm0mWEQYH3kzFHrzjOFNpSAVzDZRSJw==
 
-"@fontsource-variable/open-sans@^5.1.1":
+"@fontsource/cantarell@^5.1.1":
   version "5.1.1"
-  resolved "https://registry.npmjs.org/@fontsource-variable/open-sans/-/open-sans-5.1.1.tgz"
-  integrity sha512-5YCCAAt6t8b9T1UehgGuD0z1mZ8orrygrWC8PrA7hAIDdyQRZXYmT6A+9qG7hnhFRHR3KTSIcvBodO0EsRxZrA==
+  resolved "https://registry.npmjs.org/@fontsource/cantarell/-/cantarell-5.1.1.tgz"
+  integrity sha512-Qi1NmvCv0x+xj59MM44fhfXKGalF3FmdCa2VPuwPXCKQaoTerf25JHSyW5ufWx2NPIb0ohzKg1ycR5n6R9e3mA==
 
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
