@@ -123,10 +123,10 @@ async function uint8ArrayToCryptoKey(
 }
 
 async function base64ToCryptoKey(
-  dekString: Base64String,
+  keyString: Base64String,
   exportable: boolean = true,
 ): Promise<CryptoKey> {
-  const raw: Uint8Array = base64ToUint8Array(dekString);
+  const raw: Uint8Array = base64ToUint8Array(keyString);
 
   return await uint8ArrayToCryptoKey(raw, exportable);
 }
@@ -152,7 +152,7 @@ In our case, we only have a simple symmetric key, so I don't think it adds any v
 
 </InsertBox>
 
-We will see later if there is a better way to store the DEK. For now, serializing to base64 and storing in `localStorage` does the job.
+We will see later if there is a better way to store the DEK. For now, serializing it to base64 and storing it in `localStorage` does the job.
 
 ## Encrypting and Decrypting Data
 
@@ -310,7 +310,7 @@ Users will be able to bypass client-side validation and break their app (hey, it
 
 </InsertBox>
 
-When the user go to a new page, we retrieve the `iv` and the `encryptedData` from the backend and we decrypt data to show it to the user:
+When the user goes to a new page, we retrieve the `iv` and the `encryptedData` from the backend and we decrypt data to show it to the user:
 
 ```typescript
 async function decryptData(
