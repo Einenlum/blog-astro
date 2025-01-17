@@ -108,12 +108,12 @@ We will create a function to create a `CryptoKey` object from a `Uint8Array` and
 
 ```typescript
 async function uint8ArrayToCryptoKey(
-  dekValue: Uint8Array,
+  keyString: Uint8Array,
   exportable: boolean = true,
 ): Promise<CryptoKey> {
   return await crypto.subtle.importKey(
     'raw',
-    dekValue,
+    keyString,
     { name: 'AES-GCM' },
     // We make this a parameter of our function because
     // it will be useful later
