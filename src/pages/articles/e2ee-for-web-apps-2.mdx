@@ -3,7 +3,7 @@ import InsertBox from '../../components/insert-box.astro';
 import ImageWithLegend from '../../components/image-with-legend.astro';
 import { components as MarkdownComponents } from '../../components/markdown-components.astro';
 
-export const publishedAt = new Date(2025, 0, 16, 7);
+export const publishedAt = new Date(2025, 0, 17, 7);
 export const description =
   "We need to store the salt on the backend. We also need to store the DEK client-side. We will then encrypt and decrypt data."
 export const title = 'E2EE for Web Apps (2/4): Storing the salt and the DEK, and encrypting/decrypting data';
@@ -349,6 +349,6 @@ If you're curious about performance, I checked the time it takes to encrypt and 
 
 [Here you can find a gist](https://gist.github.com/Einenlum/ccb4b167651a5f5954914fb810475f5e) of the code we have implemented so far.
 
-While our current implementation works, it still has flaws. In the next article we will learn about **KEK** (Key Encryption Key) and how it could improve our workflow.
+While our current implementation works, it still has flaws. In the [next article](/articles/e2ee-for-web-apps-3) we will learn about **KEK** (Key Encryption Key) and how it could improve our workflow.
 
 </ArticleLayout>

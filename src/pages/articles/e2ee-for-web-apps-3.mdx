@@ -1,0 +1,364 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import InsertBox from '../../components/insert-box.astro';
+import ImageWithLegend from '../../components/image-with-legend.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+
+export const publishedAt = new Date(2025, 0, 18, 8);
+export const description =
+  "Here comes a new challenger: the Key Encryption Key. We'll see how it can help us solve the issue of changing a user's password without losing their data.";
+export const title = 'E2EE for Web Apps (3/4): Key Encryption Key';
+export const components = MarkdownComponents;
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+_This is a series of articles about end-to-end encryption. You are reading part&nbsp;3. You can read part&nbsp;1 [here](/articles/e2ee-for-web-apps-1)._
+
+In the [previous article](/articles/e2ee-for-web-apps-2), we covered a basic (but working) implementation of end-to-end encryption. We generated a DEK by deriving it from the user's password, and we used it to encrypt and decrypt data. We also stored the DEK in the browser's local storage.
+
+The DEK (Data Encryption Key) is the key used to encrypt and decrypt the data. And, again, **we derived it from the user's password**.
+
+Can you spot the issue here?
+
+If, at a later point, a user wants to change their password, the DEK will change too. This means they won't be able to read their encrypted data from the past. With this setup, the only option would be to send to the client **all their data stored in the database**, decrypt it with the old DEK, and re-encrypt it with the new DEK. This is a very bad approach, and almost impossible to do in a real-world scenario.
+
+So, how can we solve this problem? We now have to talk about the **KEK** (Key Encryption Key).
+
+This is where you should get a coffee and take a deep breath, because things are about to get a bit more complex.
+
+## A new approach
+
+### Key Encryption Key (KEK)
+
+The solution to this problem would be to have a DEK that doesn't change when the user changes their password. A user will have a unique DEK, forever. Instead of deriving the DEK from the user's password, we will generate a random DEK at sign up. **This DEK will never change and will always be used to encrypt and decrypt the data. It will be stored in the database on the server side.**
+
+But wait, shouldn't the server have no access to the DEK? Indeed. **The DEK will be stored encrypted in the database**, thanks to another (intermediate) key.
+This key is called the **KEK** (Key Encryption Key). The KEK will be derived from the user's password, and it will be used to encrypt and decrypt the DEK.
+
+Its purpose is not to encrypt the data itself, but to encrypt/decrypt the DEK. Their names explain quite well the role of each key: the _Data_ Encryption Key (DEK) is used to encrypt and decrypt data, while the _Key_ Encryption Key (KEK) is used to encrypt and decrypt another key (here: the DEK).
+
+This is a more complex setup, but it allows us to easily change the user's password without having to decrypt/encrypt again all their data while still keeping everything secure.
+
+To sum up:
+
+- The **DEK** is used to encrypt and decrypt the data. It **is generated randomly at sign up and never changes**.
+- The **KEK is derived from the user's password** (with a salt) and is used to encrypt and decrypt the DEK. The KEK **is never known by the backend**.
+- The **DEK is stored encrypted** (thanks to the KEK) in the database.
+- Each time a user logs in, the server sends the salt used to generate the KEK, the encrypted DEK and the IV used to encrypt it.
+- On the client side, the KEK is derived again from the user's password, the browser decrypts the DEK and stores it in memory.
+
+It sounds complicated at first (it is, a bit) but we don't have to change much of our code.
+
+
+Here is a diagram to illustrate this new approach:
+
+<ImageWithLegend
+    src="https://res.cloudinary.com/dybam16gk/image/upload/v1736950858/blog_images/e2ee/approach-2-1.png"
+    alt="Diagram illustrating how a user’s clear-text password becomes raw cryptographic key material, which becomes a Key Encryption Key (KEK) with a salt. The KEK is used to encrypt/decrypt the Data Encryption Key (DEK) (with an IV), and the DEK encrypts/decrypts the data with a new IV each time."
+    legend="Don't cry. It's gonna be okay."
+></ImageWithLegend>
+
+## Implementation
+
+Fortunately, we already have everything we need on the client side to implement this. We can reuse most of our code and refactor it a bit.
+
+Let's take the code that we used to generate the DEK:
+
+```typescript
+async function generateDek(
+  password: string,
+  salt: Uint8Array,
+): Promise<CryptoKey> {
+  const keyMaterial: CryptoKey = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(password),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveKey'],
+  );
+
+  const dek: CryptoKey = await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 600_000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    true,
+    ['encrypt', 'decrypt'],
+  );
+
+  return dek;
+}
+```
+
+We can use the exact same function to generate the KEK instead. Let's rename it.
+
+```typescript
+async function generateKek(
+  password: string,
+  salt: Uint8Array,
+): Promise<CryptoKey> {
+  const keyMaterial: CryptoKey = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(password),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveKey'],
+  );
+
+  const kek: CryptoKey = await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 600_000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    true,
+    ['encrypt', 'decrypt'],
+  );
+
+  return kek;
+}
+```
+
+The only thing we will change here (apart from naming) is the `exportable` parameter. Before it was set to `true` because we needed to export the DEK. But the KEK will never be exported so we can set it to `false`.
+
+```typescript
+async function generateKek(
+  password: string,
+  salt: Uint8Array,
+): Promise<CryptoKey> {
+  const keyMaterial: CryptoKey = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(password),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveKey'],
+  );
+
+  const kek: CryptoKey = await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 600_000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    // The change is here:
+    false,
+    ['encrypt', 'decrypt'],
+  );
+
+  return kek;
+}
+```
+
+We also create a function to generate the random value for the DEK:
+
+```typescript
+function generateDekValue(): Uint8Array {
+  // This will return a secure random Uint8Array of 32 bytes (256 bits)
+  return generateRandomKey(32);
+}
+```
+
+We can now create a random DEK:
+
+```typescript
+const dek: CryptoKey = await uint8ArrayToCryptoKey(
+    generateDekValue()
+);
+```
+
+And we can create a KEK at sign up:
+
+```typescript
+const userPassword: string = '...';
+const kekSalt: Uint8Array = generateSalt();
+const kekSaltAsBase64: Base64String = uint8ArrayToBase64(kekSalt);
+
+const kek: CryptoKey = await generateKek(
+    userPassword,
+    kekSalt
+);
+```
+
+Now we can store the DEK in our JS app and localStorage, and encrypt the DEK with the KEK:
+
+```typescript
+// store the DEK in our JS store
+// ...
+
+const dekAsBase64: Base64String = await cryptoKeyToBase64(dek);
+window.localStorage.setItem('dek', dekAsBase64);
+
+// encrypt DEK with our KEK
+const { iv, encryptedData } = await encryptData(kek, dek);
+```
+
+We can now store everything we need in the database. To do this we first need to change a bit our DB schema for the `users` table.
+
+Before we had this:
+
+```
+  Column ............................... Type  
+  id, autoincrement ................. integer  
+  email ............................. varchar  
+  email_verified_at, nullable ...... datetime  
+  password .......................... varchar  
+  remember_token, nullable .......... varchar  
+  dek_salt .......................... varchar
+  created_at ....................... datetime  
+```
+
+We will rename `dek_salt` to `kek_salt`. We will also add `dek_iv` and `encrypted_dek`.
+
+```
+  Column ............................... Type  
+  id, autoincrement ................. integer  
+  email ............................. varchar  
+  email_verified_at, nullable ...... datetime  
+  password .......................... varchar  
+  remember_token, nullable .......... varchar  
+  kek_salt .......................... varchar
+  dek_iv ............................ varchar
+  encrypted_dek ..................... varchar
+  created_at ....................... datetime  
+```
+
+Now on sign up, we can send these values to the server:
+
+```typescript
+await axios.post('/register', {
+  email: '...',
+  password: userPassword,
+  kek_salt: kekSaltAsBase64,
+  dek_iv: iv,
+  encrypted_dek: encryptedData,
+});
+```
+
+If we recap, it's less complicated than expected.
+
+```typescript
+// Generate dek and store it client side
+const dek: CryptoKey = await uint8ArrayToCryptoKey(generateDekValue());
+const dekAsBase64: Base64String = await cryptoKeyToBase64(dek);
+window.localStorage.setItem('dek', dekAsBase64);
+
+// KEK generation
+const userPassword: string = '...';
+
+const kekSalt: Uint8Array = generateSalt();
+const kekSaltAsBase64: Base64String = uint8ArrayToBase64(kekSalt);
+const kek: CryptoKey = await generateKek(userPassword, kekSalt);
+
+// DEK encryption
+const { iv, encryptedData } = await encryptData(kek, dek);
+```
+
+Now when a user logs in, we need to generate the same KEK (with the user's password and salt) and decrypt the DEK. At login the server sends the following information we need:
+
+- `kek_salt`
+- `dek_iv`
+- `encrypted_dek`
+
+We first generate the KEK:
+
+```typescript
+// login call
+const { kek_salt, dek_iv, encrypted_dek  } = response.data;
+
+// clear-text password the user entered in the form
+const userPassword: string = '...';
+
+const kek: CryptoKey = await generateKek(
+    userPassword,
+    base64ToUint8Array(kek_salt)
+);
+```
+
+And we decrypt the DEK:
+
+```typescript
+// We get the exported DEK as base64
+const dekAsBase64: Base64String = await decryptData(kek, dek_iv, encrypted_dek);
+
+// We convert it back to a CryptoKey
+const dek: CryptoKey = await base64ToCryptoKey(dekAsBase64);
+```
+
+We can now use the DEK as before to encrypt and decrypt data. The rest of our app doesn't change.
+
+### Changing the user's password
+
+When a user wants to change their password, we need to:
+
+- Retrieve the encrypted DEK and the IV from the database
+- Generate the old KEK with the old salt and old password (we have the old password because we ask for the current password when the user wants to change it)
+- Decrypt the DEK
+- Generate the new KEK with a new salt and the new password
+- Encrypt the DEK with the new KEK
+- Store the new KEK salt, the new IV, and the new encrypted DEK in the database
+
+```typescript
+// Data sent from the backend when the form appears
+const oldKekSalt: Base64String = '...';
+const oldDekIv: Base64String = '...';
+const oldEncryptedDek: Base64String = '...';
+
+// Taken from the password form
+const oldPassword: string = '...';
+const newPassword: string = '...';
+
+const oldKek: CryptoKey = await generateKek(
+    oldPassword,
+    base64ToUint8Array(oldKekSalt)
+);
+
+const dekAsBase64: Base64String = await decryptData(
+    oldKek,
+    oldDekIv,
+    oldEncryptedDek,
+);
+
+const newKekSalt: Uint8Array = generateSalt();
+const newKek: CryptoKey = await generateKek(
+    newPassword,
+    newKekSalt
+);
+const newKekSaltAsBase64: Base64String = uint8ArrayToBase64(newKekSalt);
+
+const newEncryption: EncryptionResult = await encryptData(
+    newKek,
+    dekAsBase64
+);
+
+const newDekIv: Base64String = newEncryption.iv;
+const newEncryptedDek: Base64String = newEncryption.encryptedData;
+
+// Send these new data with the form:
+await axios.post('/change-password', {
+    current_password: oldPassword,
+    new_password: newPassword,
+    kek_salt: newKekSaltAsBase64,
+    dek_iv: newDekIv,
+    encrypted_dek: newEncryptedDek,
+});
+
+// On success we can update the local storage and JS store
+// ...
+```
+
+We solved a big issue here! We can now both have a way to encrypt data with zero knowledge from the server and allow users to change their password without losing their data.
+
+You can find the full code for this new approach (DEK + KEK) in [this gist](https://gist.github.com/Einenlum/3770fccafc11c2c97aee61722fcd12df).
+
+In the next article, we will see further possible improvements and conclude this series.
+
+</ArticleLayout>
