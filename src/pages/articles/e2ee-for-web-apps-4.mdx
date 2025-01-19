@@ -1,0 +1,375 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import InsertBox from '../../components/insert-box.astro';
+import ImageWithLegend from '../../components/image-with-legend.astro';
+import InlineQuote from '../../components/inline-quote.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+
+export const publishedAt = new Date(2025, 0, 19, 9);
+export const description =
+  "There are still many things we could do to improve the security of our app, but we learned a lot.";
+export const title = 'E2EE for Web Apps (4/4): Possible improvements and conclusion';
+export const components = MarkdownComponents;
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt}>
+
+_This is a series of articles about end-to-end encryption. You are reading part&nbsp;4 (the last one). You can read part&nbsp;1 [here](/articles/e2ee-for-web-apps-1)._
+
+In [the previous article](/articles/e2ee-for-web-apps-3), we introduced the KEK (Key Encryption Key) and we now have a working E2EE implementation, even when the user changes their password. There are still some things we could do to improve security though.
+
+We previously decided to store the DEK (serialized as base64) in local storage. A more secure way would have been to store it in the session storage, but I want to avoid my users logging in every time they close the website. Both work, but they have one drawback: **we can only store strings**. We can't store binary data or objects directly. This is why we have to export our DEK as a base64 string.
+
+I personally don't fear XSS attacks on my app because no data is shared between users. But I would like to avoid a different user using the same machine having access to a previous user's DEK. To do this, we could use IndexedDB.
+
+## IndexedDB
+
+[IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) is an alternative to local storage maintained by the W3C. It's much more powerful than local storage: it's a full NoSQL database and can handle way more data. It's also asynchronous. Since it can store any object (including CryptoKey objects), we can store a DEK in it without allowing any possibility to export it. **An attacker would not be able to export the DEK value stored in IndexedDB, which reduces the attack surface**.
+
+**The big downside of IndexedDB is that its API is really complex and ugly**.
+
+### Basics
+
+Before showing the code, you first need to grasp a few concepts:
+
+- IndexedDB has the same security features as local storage: it's **bound to the origin of the website** (domain + protocol + port).
+- It is **asynchronous**. You have to use promises to interact with it.
+- You can have multiple databases for the same origin. This means **each database must have a name**.
+- **Each database has a version number**. If the user has a lower version already or they don't have the database yet, the `onupgradeneeded` event is triggered.
+- **Each database has _stores_**: since we only use it here for one key/value it's not very useful, but you can have multiple stores in the same database.
+- Each store has a name and can store key/value pairs.
+- It **uses transactions** to interact with the stores. Everytime you open a transaction you have to specify if it's read-only or read-write.
+
+Here is what I ended up with:
+
+```typescript
+// We put this beauty in a separate file
+// like db.ts
+
+export default class SimpleIndexedDB {
+  private dbName: string;
+  private storeName: string;
+
+  constructor(
+      dbName: string,
+      storeName: string
+  ) {
+    this.dbName = dbName;
+    this.storeName = storeName;
+  }
+
+  // Initialize the database
+  private async initDB(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(
+          this.dbName,
+          // 1 is the version of our database
+          // If the database doesn't exist, it will be created
+          1
+      );
+
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName);
+        }
+      };
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  // Set an item in the store
+  async setItem(key: string, value: any): Promise<void> {
+    const db = await this.initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(
+          this.storeName,
+          'readwrite'
+      );
+      const store = transaction.objectStore(
+          this.storeName
+      );
+      const request = store.put(value, key);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  // Get an item from the store
+  async getItem<T = any>(key: string): Promise<T | null> {
+    const db = await this.initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(
+          this.storeName,
+          'readonly'
+      );
+      const store = transaction.objectStore(
+          this.storeName
+      );
+      const request = store.get(key);
+
+      request.onsuccess = () => resolve(
+          request.result ?? null
+      );
+      request.onerror = () => reject(
+          request.error
+      );
+    });
+  }
+
+  // Delete an item from the store
+  async removeItem(key: string): Promise<void> {
+    const db = await this.initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(
+          this.storeName,
+          'readwrite'
+      );
+      const store = transaction.objectStore(
+          this.storeName
+      );
+      const request = store.delete(key);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(
+          request.error
+      );
+    });
+  }
+}
+```
+
+And here is how you would use it:
+
+```typescript
+// app.ts
+
+import SimpleIndexedDB from './db';
+
+const db = new SimpleIndexedDB('myDatabase', 'myStore');
+
+// Set an item
+await db.setItem('foo', foo);
+// Get an item
+const foo = await db.getItem('foo');
+// Delete an item
+await db.removeItem('foo');
+```
+
+Since the DEK can be stored as a CryptoKey we can set `exportable` to `false` when we generate it. Remember our `uint8ArrayToCryptoKey` and `base64ToCryptoKey` functions?
+
+```typescript
+async function uint8ArrayToCryptoKey(
+  keyString: Uint8Array,
+  exportable: boolean = true,
+): Promise<CryptoKey> {
+  return await crypto.subtle.importKey(
+    'raw',
+    keyString,
+    { name: 'AES-GCM' },
+    exportable,
+    ['encrypt', 'decrypt'],
+  );
+}
+
+async function base64ToCryptoKey(
+  keyString: Base64String,
+  exportable: boolean = true,
+): Promise<CryptoKey> {
+  const raw: Uint8Array = base64ToUint8Array(keyString);
+
+  return await uint8ArrayToCryptoKey(
+      raw,
+      exportable
+  );
+}
+```
+
+We can now use `uint8ArrayToCryptoKey` with `exportable` set to `false` on user registration:
+
+```typescript
+// ...
+
+const kek: CryptoKey = await generateKek(
+    userPassword,
+    kekSalt
+);
+
+// DEK creation
+const dekValue: Uint8Array = generateDekValue();
+
+const dek: CryptoKey = await uint8ArrayToCryptoKey(
+    dekValue,
+    // Here we set exportable to false
+    false
+);
+
+// Encrypting the DEK
+const encryptedDek: Uint8Array = await encryptData(
+    kek,
+    dekValue
+);
+```
+
+And the same thing with `base64ToCryptoKey` on login:
+
+```typescript
+// ...
+
+// We get the exported DEK as base64
+const dekAsBase64: Base64String = await decryptData(
+    kek,
+    dek_iv,
+    encrypted_dek
+);
+
+// We convert it back to a CryptoKey
+const dek: CryptoKey = await base64ToCryptoKey(
+    dekAsBase64,
+    // Here we set exportable to false
+    false
+);
+```
+
+Then we can directly store and get the DEK as a `CryptoKey` object in IndexedDB:
+
+```typescript
+import SimpleIndexedDB from './db';
+
+const db = new SimpleIndexedDB('MyAppName', 'security');
+
+await db.setItem('dek', dek);
+const dek: CryptoKey = await db.getItem('dek');
+```
+
+<InsertBox>
+
+You could also use a third-party library to avoid writing this code to handle IndexedDB, like [localForage](https://github.com/localForage/localForage) or [Dexie.js](https://github.com/dexie/Dexie.js).
+
+If you use a third-party library, only use one you can trust and that is actively maintained. This is true in every case but since we're writing about E2EE, it would make even less sense to use a shady JS lib that could steal our user's data on the client side.
+
+If you're curious, RxDB published an [interesting article](https://rxdb.info/articles/localstorage-indexeddb-cookies-opfs-sqlite-wasm.html) comparing the options you have to store things on the client side (covering local storage and IndexedDB among others).
+
+</InsertBox>
+
+Both localStorage and IndexedDB suffer from the same problem though: **there is no way to set an expiration date on the data**. Something like this would have been great for us, so that the browser automatically removes from the DB all the stale values. Right now it means if the user doesn't log out, the DEK will stay in the storage forever. I don't have any solution for this right now. But storing a non-exportable DEK gives us better guarantees already, in terms of security. If another user uses the same machine once the `remember_me` token is invalid, they will not have access to the user's data anyway. They will be redirected to the login page and we will clear the DEK from IndexedDB.
+
+
+## Passwords on the server
+
+One thing troubling me is the fact that **we still send the password in clear text to the backend**. Sure, the backend doesn't store it, but if an attacker manages to get access to the server and log the incoming requests, they could recreate the KEK of the user (thanks to their salt) and decrypt their DEK.
+
+### Double Hashing
+
+I thought about a solution which would be to generate a second derived key from the password with a different salt than the one used for the KEK, and to use this as the password for the backend. We would derive two keys from the clear-text password: one to generate the KEK, and one to be used as the password for the backend.
+
+The server would never see the clear-text password of the user. The key received by the backend would be then hashed again on the server (this seems to be known as <InlineQuote>Double Hashing</InlineQuote>: the client hashes the password, and this hash is then hashed again by the server to compare it to what's stored in the database).
+
+In a traditional web app, a password has kind of two <InlineQuote>states</InlineQuote>: clear-text and hashed.
+
+Here we would have three states:
+
+1. The clear-text password
+2. A key derived from the clear-text password, sent to the backend
+3. A hash of this key, stored in the database
+
+This could look like this:
+
+<ImageWithLegend
+    src="https://res.cloudinary.com/dybam16gk/image/upload/v1737296447/blog_images/e2ee/approach-2-2.png"
+    alt="Diagram illustrating three stages of a password: clear-text, derived key, and hashed key. The clear-text password is derived using PBKDF2 (but with what salt?), the derived key is sent to the backend, and the derived key is then hashed. The hash is stored in the database."
+    legend="An illustration of the three states of a password: clear-text (1), derived key (2), and hashed key (3)."
+></ImageWithLegend>
+
+The problem I had was to find a salt: how do you send their salt to a user on login, _before_ they are authenticated? **I decided to pause this idea for now.**
+
+Some very smart people already created some protocols to build a system where the server has zero knowledge of the password.
+
+The two most famous ones seem to be [SRP (Secure Remote Password)](https://en.wikipedia.org/wiki/Secure_Remote_Password_protocol) (used by [Proton](https://proton.me/blog/encrypted-email-authentication)) and [OPAQUE](https://blog.cloudflare.com/opaque-oblivious-passwords/). They are both very complex so I didn't dive into them yet.
+
+I recently read the [**Bitwarden**'s whitepaper](https://bitwarden.com/help/bitwarden-security-white-paper/) though, and **they use** a zero-knowledge system without SRP or OPAQUE, **by using double hashing**. It seems way simpler and quite similar to what I had in mind (they use the email as a salt for the password hash on the client side). I would like to dive into this more and I could maybe write about this in the future.
+
+<InsertBox>
+
+Trying to implement double-hashing made me remember that [**bcrypt**](https://en.wikipedia.org/wiki/Bcrypt) (the password hashing function used by default by some web frameworks) **has a limit of 72 characters**. As soon as the input reaches 73 characters, the input is silently truncated.
+
+
+You can easily verify this in TypeScript (with the [bcrypt package](https://www.npmjs.com/package/bcrypt)):
+
+```typescript
+import bycrpt from "bcrypt";
+
+const saltRounds = 10;
+
+// password is 'aaaaa...' (72 characters)
+const password = "a".repeat(72);
+const hash = await bycrpt.hash(
+    password,
+    saltRounds
+);
+
+// false (makes sense)
+await bycrpt.compare(
+    "a".repeat(71),
+    hash
+);
+
+// true
+await bycrpt.compare(
+    password,
+    hash
+);
+
+// true too!
+await bycrpt.compare(
+    "a".repeat(73),
+    hash
+);
+
+// true too!
+await bycrpt.compare(
+    "a".repeat(120) + " hello world",
+    hash
+);
+```
+
+I guess this is good to keep in mind if you want to use bcrypt for derived key that can be long (always check their length before choosing the algorithm).
+
+</InsertBox>
+
+## Looking at my threat model again
+
+In the first article, I wrote about what I wanted to prevent:
+
+>    - The first person I want to prevent from accessing data is _myself_: we all have heard stories about an employee making a mistake, publishing things they didn't intend to, or (more commonly) storing sensitive information in the logs.
+>    - The second potential threat is a hacker who could get into my server and steal the database.
+
+I guess **our implementation only prevents an attacker from reading the data of my users, once they get the database**.
+
+Other types of attacks/incidents not being prevented by the current implementation:
+
+<div class="mb-8">
+1. A mistake from the dev: the password could be written in the logs by mistake
+2. An attacker could access the server and add a backdoor where they log every incoming request to get the users' password
+3. A shady JS library listens to DOM events to send decrypted data
+4. A combination of the two previous ones (2. and 3.) where an attacker accesses my server and changes the libs sent to the client
+</div>
+
+- **Implementing double hashing** or a zero knowledge protocol like SRP or OPAQUE **should prevent point 1 and point 2**.
+- By using the smallest possible amount of JavaScript libs and choosing them well, I guess the risk of point 3. is quite small and I'm not sure how we could avoid it completely.
+- Finally, point 4 is quite interesting because I'm not sure how we could detect the change of Javascript resources sent by the server. This point is usually one of the reasons why **people are reluctant to use end-to-end encryption on the browser. A native app is way more secure** because every user downloads the same release which cannot change between two installations. You can read more about this [here](https://cronokirby.com/posts/2021/06/e2e_in_the_browser/).
+
+## Conclusion
+
+We have a (partially-flawed) implementation of end-to-end encryption. We can improve things further but it's already quite cool. I learned so much about encryption and the different methods websites use to secure their data! In the future, I would like to explore more about the topic of security.
+
+<InsertBox>
+
+Writing this series of articles took me quite some time and effort. **I would love to get some feedback to understand what's wrong in my implementation**. You can ping me on [Twitter](https://x.com/Einenlum), [Mastodon](https://fosstodon.org/@einenlum) or [BlueSky](https://bsky.app/profile/einenlum.bsky.social).
+
+**If you enjoyed it or learned something, don't hesitate to share it!**
+
+</InsertBox>
+
+</ArticleLayout>
