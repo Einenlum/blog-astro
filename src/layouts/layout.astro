@@ -8,9 +8,10 @@ export interface Props {
 	title: string,
 	description: string,
 	includeSearch?: boolean,
+    previewImage?: string,
 }
 
-const { title, description, includeSearch } = Astro.props as Props;
+const { title, description, includeSearch, previewImage } = Astro.props as Props;
 ---
 
 <!DOCTYPE html>
@@ -26,14 +27,14 @@ const { title, description, includeSearch } = Astro.props as Props;
         <meta property="og:title" content={title}>
         <meta property="og:description" content={description}>
         <meta property="og:url" content={Astro.url}>
-		<meta property="og:image" content="https://www.einenlum.com/favicon.png">
+        <meta property="og:image" content={previewImage || "https://www.einenlum.com/favicon.png"}>
 		<meta property="og:type" content="website" />
 
 		<meta name="twitter:card" content="summary">
 		<meta name="twitter:site" content="einenlum.com">
 		<meta name="twitter:title" content={title}>
 		<meta name="twitter:description" content={description}>
-		<meta name="twitter:image" content="https://www.einenlum.com/favicon.png">
+        <meta name="twitter:image" content={previewImage || "https://www.einenlum.com/favicon.png"}>
 
 		<meta charset="UTF-8"> 
 		<title>{title}</title>

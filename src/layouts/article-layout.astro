@@ -8,13 +8,14 @@ export interface Props {
 	description: string,
     publishedAt: Date,
     existingHackerNewsUrl?: string,
+    previewImage?: string,
 }
 
-const { title, description, publishedAt, existingHackerNewsUrl } = Astro.props;
+const { title, description, publishedAt, existingHackerNewsUrl, previewImage } = Astro.props;
 const hackerNewsUrl = existingHackerNewsUrl || `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(Astro.url)}&t=${encodeURIComponent(title)}`;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} previewImage={previewImage}>
     <!-- Pagefind will only look for articles now -->
     <div data-pagefind-body>
         <ArticleHeader title={title} publishedAt={publishedAt} />
