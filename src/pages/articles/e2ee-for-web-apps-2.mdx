@@ -11,7 +11,21 @@ export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt}>
 
-_This is a series of articles about end-to-end encryption. You are currently reading part&nbsp;2. You can read part&nbsp;1 [here](/articles/e2ee-for-web-apps-1)._
+_This is a series of articles about end-to-end encryption. You are currently reading part&nbsp;2._
+
+<InsertBox>
+
+**Table of contents**
+
+- [_Part 1_](/articles/e2ee-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
+- _Part 2_ (**you are here**): Storing the salt and the DEK, and encrypting/decrypting data
+    * Storing the salt
+    * What about the DEK?
+    * Encrypting and Decrypting Data
+- [_Part 3_](/articles/e2ee-for-web-apps-3)&nbsp;: Key Encryption Key
+- [_Part 4_](/articles/e2ee-for-web-apps-4)&nbsp;: Possible improvements and conclusion
+
+</InsertBox>
 
 In the last article, we covered the mechanism of key derivation from a password. We also discovered the term **DEK** (Data Encryption Key). We have generated a DEK and a salt. What's next?
 

@@ -16,6 +16,23 @@ _This is a series of articles about end-to-end encryption. You are reading part&
 
 **Disclaimer: I'm not a security expert, so take everything I say with a grain of salt (sorry for the pun). Ask for advice from a security expert if you plan to implement this in a production environment.**
 
+<InsertBox>
+
+**Table of contents**
+
+- _Part 1_ (**you are here**): PBKDF2, DEK and CryptoJS
+    * First thoughts and requirements
+    * Choosing the right threat model
+    * A weird lack of resources
+    * First approach
+    * Generating a key from a password
+- [_Part 2_](/articles/e2ee-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
+- [_Part 3_](/articles/e2ee-for-web-apps-3)&nbsp;: Key Encryption Key
+- [_Part 4_](/articles/e2ee-for-web-apps-4)&nbsp;: Possible improvements and conclusion
+
+</InsertBox>
+
+
 The story began when a few friends and I realized there was no good and simple web app to track alcohol consumption. We had a few simple requirements and I thought it would be super easy to code. Fair enough. This would be for my friends and myself, but I also planned to make it public for anyone interested in tracking their health habits.
 
 At some point, I discussed this project with a friend who is also a dev (check his [cool blog](https://devblog.dunsap.com/) btw). He answered with a question: <InlineQuote>Isn't storing alcohol consumption linked to an email in clear text a problem?</InlineQuote>. Sensible question. What if my app gets breached, and someone has access to my db containing the alcohol consumption of users?

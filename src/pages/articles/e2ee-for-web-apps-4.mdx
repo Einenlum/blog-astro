@@ -12,7 +12,22 @@ export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt}>
 
-_This is a series of articles about end-to-end encryption. You are reading part&nbsp;4 (the last one). You can read part&nbsp;1 [here](/articles/e2ee-for-web-apps-1)._
+_This is a series of articles about end-to-end encryption. You are reading part&nbsp;4._
+
+<InsertBox>
+
+**Table of contents**
+
+- [_Part 1_](/articles/e2ee-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
+- [_Part 2_](/articles/e2ee-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
+- [_Part 3_](/articles/e2ee-for-web-apps-3)&nbsp;: Key Encryption Key
+- _Part 4_ (**you are here**): Possible improvements and conclusion
+    * IndexedDB
+    * Passwords on the server
+    * Looking at my threat model again
+    * Conclusion
+
+</InsertBox>
 
 In [the previous article](/articles/e2ee-for-web-apps-3), we introduced the KEK (Key Encryption Key) and we now have a working E2EE implementation, even when the user changes their password. There are still some things we could do to improve security though.
 

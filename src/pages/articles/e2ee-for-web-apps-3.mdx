@@ -11,7 +11,20 @@ export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt}>
 
-_This is a series of articles about end-to-end encryption. You are reading part&nbsp;3. You can read part&nbsp;1 [here](/articles/e2ee-for-web-apps-1)._
+_This is a series of articles about end-to-end encryption. You are reading part&nbsp;3._
+
+<InsertBox>
+
+**Table of contents**
+
+- [_Part 1_](/articles/e2ee-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
+- [_Part 2_](/articles/e2ee-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
+- _Part 3_ (**you are here**): Key Encryption Key
+    * A new approach
+    * Implementation
+- [_Part 4_](/articles/e2ee-for-web-apps-4)&nbsp;: Possible improvements and conclusion
+
+</InsertBox>
 
 In the [previous article](/articles/e2ee-for-web-apps-2), we covered a basic (but working) implementation of end-to-end encryption. We generated a DEK by deriving it from the user's password, and we used it to encrypt and decrypt data. We also stored the DEK in the browser's local storage.
 
