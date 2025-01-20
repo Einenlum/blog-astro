@@ -288,7 +288,7 @@ Some very smart people already created some protocols to build a system where th
 
 The two most famous ones seem to be [SRP (Secure Remote Password)](https://en.wikipedia.org/wiki/Secure_Remote_Password_protocol) (used by [Proton](https://proton.me/blog/encrypted-email-authentication)) and [OPAQUE](https://blog.cloudflare.com/opaque-oblivious-passwords/). They are both very complex so I didn't dive into them yet.
 
-I recently read the [**Bitwarden**'s whitepaper](https://bitwarden.com/help/bitwarden-security-white-paper/) though, and **they use** a zero-knowledge system without SRP or OPAQUE, **by using double hashing**. It seems way simpler and quite similar to what I had in mind (they use the email as a salt for the password hash on the client side). I would like to dive into this more and I could maybe write about this in the future.
+I recently read the [**Bitwarden**'s whitepaper](https://bitwarden.com/help/bitwarden-security-white-paper/) though, and they use a zero-knowledge system without SRP or OPAQUE, by **using double hashing**. It seems way simpler and quite similar to what I had in mind (they use the email as a salt for the password hash on the client side). I would like to dive into this more and I could maybe write about this in the future.
 
 <InsertBox>
 
