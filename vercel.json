@@ -40,6 +40,6 @@
         "source": "/articles/e2ee-for-web-apps-4",
         "permanent": true,
         "destination": "/articles/client-side-encryption-for-web-apps-4"
-    },
+    }
   ]
 }
