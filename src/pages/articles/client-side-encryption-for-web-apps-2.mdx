@@ -6,25 +6,25 @@ import { components as MarkdownComponents } from '../../components/markdown-comp
 export const publishedAt = new Date(2025, 0, 17, 7);
 export const description =
   "We need to store the salt on the backend. We also need to store the DEK client-side. We will then encrypt and decrypt data."
-export const title = 'E2EE for Web Apps (2/4): Storing the salt and the DEK, and encrypting/decrypting data';
+export const title = 'Client-side encryption for web apps (2/4): Storing the salt and DEK, and encrypting/decrypting data';
 export const previewImage = 'https://res.cloudinary.com/dybam16gk/image/upload/v1736949617/blog_images/e2ee/approach-1-3.png';
 export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt} previewImage={previewImage}>
 
-_This is a series of articles about end-to-end encryption. You are currently reading part&nbsp;2._
+_This is a series of articles about client-side encryption. You are currently reading part&nbsp;2._
 
 <InsertBox>
 
 **Table of contents**
 
-- [_Part 1_](/articles/e2ee-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
+- [_Part 1_](/articles/client-side-encryption-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
 - _Part 2_ (**you are here**): Storing the salt and the DEK, and encrypting/decrypting data
-    * Storing the salt
-    * What about the DEK?
-    * Encrypting and Decrypting Data
-- [_Part 3_](/articles/e2ee-for-web-apps-3)&nbsp;: Key Encryption Key
-- [_Part 4_](/articles/e2ee-for-web-apps-4)&nbsp;: Possible improvements and conclusion
+    * [Storing the salt](#storing-the-salt)
+    * [What about the DEK?](#what-about-the-dek)
+    * [Encrypting and Decrypting Data](#encrypting-and-decrypting-data)
+- [_Part 3_](/articles/client-side-encryption-for-web-apps-3)&nbsp;: Key Encryption Key
+- [_Part 4_](/articles/client-side-encryption-for-web-apps-4)&nbsp;: Possible improvements and conclusion
 
 </InsertBox>
 
@@ -348,7 +348,7 @@ async function decryptData(
 const decryptedData = await decryptData(dek, iv, encryptedData);
 ```
 
-Success! We now have a functional implementation of end-to-end encryption.
+Success! We now have a functional implementation of client-side encryption.
 
 <ImageWithLegend
     src="https://res.cloudinary.com/dybam16gk/image/upload/v1736949617/blog_images/e2ee/approach-1-3.png"
@@ -364,6 +364,6 @@ If you're curious about performance, I checked the time it takes to encrypt and 
 
 [Here you can find a gist](https://gist.github.com/Einenlum/ccb4b167651a5f5954914fb810475f5e) of the code we have implemented so far.
 
-While our current implementation works, it still has flaws. In the [next article](/articles/e2ee-for-web-apps-3) we will learn about **KEK** (Key Encryption Key) and how it could improve our workflow.
+While our current implementation works, it still has flaws. In the [next article](/articles/client-side-encryption-for-web-apps-3) we will learn about **KEK** (Key Encryption Key) and how it could improve our workflow.
 
 </ArticleLayout>

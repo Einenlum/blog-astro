@@ -6,28 +6,28 @@ import { components as MarkdownComponents } from '../../components/markdown-comp
 export const publishedAt = new Date(2025, 0, 18, 8);
 export const description =
   "Here comes a new challenger: the Key Encryption Key. We'll see how it can help us solve the issue of changing a user's password without losing their data.";
-export const title = 'E2EE for Web Apps (3/4): Key Encryption Key';
+export const title = 'Client-side encryption for web apps (3/4): Key Encryption Key (KEK)';
 export const previewImage = 'https://res.cloudinary.com/dybam16gk/image/upload/v1736950858/blog_images/e2ee/approach-2-1.png';
 export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt} previewImage={previewImage}>
 
-_This is a series of articles about end-to-end encryption. You are reading part&nbsp;3._
+_This is a series of articles about client-side encryption. You are reading part&nbsp;3._
 
 <InsertBox>
 
 **Table of contents**
 
-- [_Part 1_](/articles/e2ee-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
-- [_Part 2_](/articles/e2ee-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
+- [_Part 1_](/articles/client-side-encryption-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
+- [_Part 2_](/articles/client-side-encryption-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
 - _Part 3_ (**you are here**): Key Encryption Key
-    * A new approach
-    * Implementation
-- [_Part 4_](/articles/e2ee-for-web-apps-4)&nbsp;: Possible improvements and conclusion
+    * [A new approach](#a-new-approach)
+    * [Implementation](#implementation)
+- [_Part 4_](/articles/client-side-encryption-for-web-apps-4)&nbsp;: Possible improvements and conclusion
 
 </InsertBox>
 
-In the [previous article](/articles/e2ee-for-web-apps-2), we covered a basic (but working) implementation of end-to-end encryption. We generated a DEK by deriving it from the user's password, and we used it to encrypt and decrypt data. We also stored the DEK in the browser's local storage.
+In the [previous article](/articles/client-side-encryption-for-web-apps-2), we covered a basic (but working) implementation of client-side encryption. We generated a DEK by deriving it from the user's password, and we used it to encrypt and decrypt data. We also stored the DEK in the browser's local storage.
 
 The DEK (Data Encryption Key) is the key used to encrypt and decrypt the data. And, again, **we derived it from the user's password**.
 
@@ -373,6 +373,6 @@ We solved a big issue here! We can now both have a way to encrypt data with zero
 
 You can find the full code for this new approach (DEK + KEK) in [this gist](https://gist.github.com/Einenlum/3770fccafc11c2c97aee61722fcd12df).
 
-In the [next article](/articles/e2ee-for-web-apps-4), we will see further possible improvements and conclude this series.
+In the [next article](/articles/client-side-encryption-for-web-apps-4), we will see further possible improvements and conclude this series.
 
 </ArticleLayout>

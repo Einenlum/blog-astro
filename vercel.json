@@ -20,6 +20,26 @@
         "source": "/books/fromphptopython/sample-chapters/regexes.pdf",
         "permanent": true,
         "destination": "https://fromphptopython-pdfs.fra1.cdn.digitaloceanspaces.com/chapters/1.3/regexes.pdf"
-    }
+    },
+    {
+        "source": "/articles/e2ee-for-web-apps-1",
+        "permanent": true,
+        "destination": "/articles/client-side-encryption-for-web-apps-1"
+    },
+    {
+        "source": "/articles/e2ee-for-web-apps-2",
+        "permanent": true,
+        "destination": "/articles/client-side-encryption-for-web-apps-2"
+    },
+    {
+        "source": "/articles/e2ee-for-web-apps-3",
+        "permanent": true,
+        "destination": "/articles/client-side-encryption-for-web-apps-3"
+    },
+    {
+        "source": "/articles/e2ee-for-web-apps-4",
+        "permanent": true,
+        "destination": "/articles/client-side-encryption-for-web-apps-4"
+    },
   ]
 }

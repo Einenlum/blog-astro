@@ -1,1 +1,9 @@
-<h1 class="text-lg md:text-xl font-sans tracking-wide md:tracking-wider"><slot /></h1>
+---
+export interface Props {
+	id: string,
+}
+
+const { id } = Astro.props;
+---
+
+<h1 class="text-lg md:text-xl font-sans tracking-wide md:tracking-wider" id={id}><slot /></h1>

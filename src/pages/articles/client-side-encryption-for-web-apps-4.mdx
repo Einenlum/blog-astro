@@ -7,30 +7,30 @@ import { components as MarkdownComponents } from '../../components/markdown-comp
 export const publishedAt = new Date(2025, 0, 19, 9);
 export const description =
   "There are still many things we could do to improve the security of our app, but we learned a lot.";
-export const title = 'E2EE for Web Apps (4/4): Possible improvements and conclusion';
+export const title = 'Client-side encryption for web apps (4/4): Possible improvements and conclusion';
 export const previewImage = 'https://res.cloudinary.com/dybam16gk/image/upload/v1737296447/blog_images/e2ee/approach-2-2.png';
 export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt} previewImage={previewImage}>
 
-_This is a series of articles about end-to-end encryption. You are reading part&nbsp;4._
+_This is a series of articles about client-side encryption. You are reading part&nbsp;4._
 
 <InsertBox>
 
 **Table of contents**
 
-- [_Part 1_](/articles/e2ee-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
-- [_Part 2_](/articles/e2ee-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
-- [_Part 3_](/articles/e2ee-for-web-apps-3)&nbsp;: Key Encryption Key
+- [_Part 1_](/articles/client-side-encryption-for-web-apps-1)&nbsp;: PBKDF2, DEK and CryptoJS
+- [_Part 2_](/articles/client-side-encryption-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
+- [_Part 3_](/articles/client-side-encryption-for-web-apps-3)&nbsp;: Key Encryption Key
 - _Part 4_ (**you are here**): Possible improvements and conclusion
-    * IndexedDB
-    * Passwords on the server
-    * Looking at my threat model again
-    * Conclusion
+    * [IndexedDB](#indexeddb)
+    * [Passwords on the server](#passwords-on-the-server)
+    * [Looking at my threat model again](#looking-at-my-threat-model-again)
+    * [Conclusion](#conclusion)
 
 </InsertBox>
 
-In [the previous article](/articles/e2ee-for-web-apps-3), we introduced the KEK (Key Encryption Key) and we now have a working E2EE implementation, even when the user changes their password. There are still some things we could do to improve security though.
+In [the previous article](/articles/client-side-encryption-for-web-apps-3), we introduced the KEK (Key Encryption Key) and we now have a working client-side encryption implementation, even when the user changes their password. There are still some things we could do to improve security though.
 
 We previously decided to store the DEK (serialized as base64) in local storage. A more secure way would have been to store it in the session storage, but I want to avoid my users logging in every time they close the website. Both work, but they have one drawback: **we can only store strings**. We can't store binary data or objects directly. This is why we have to export our DEK as a base64 string.
 
@@ -263,7 +263,7 @@ const dek: CryptoKey = await db.getItem('dek');
 
 You could also use a third-party library to avoid writing this code to handle IndexedDB, like [localForage](https://github.com/localForage/localForage) or [Dexie.js](https://github.com/dexie/Dexie.js).
 
-If you use a third-party library, only use one you can trust and that is actively maintained. This is true in every case but since we're writing about E2EE, it would make even less sense to use a shady JS lib that could steal our user's data on the client side.
+If you use a third-party library, only use one you can trust and that is actively maintained. This is true in every case but since we're writing about client-side encryption, it would make even less sense to use a shady JS lib that could steal our user's data on the client side.
 
 If you're curious, RxDB published an [interesting article](https://rxdb.info/articles/localstorage-indexeddb-cookies-opfs-sqlite-wasm.html) comparing the options you have to store things on the client side (covering local storage and IndexedDB among others).
 
@@ -374,11 +374,11 @@ Other types of attacks/incidents not being prevented by the current implementati
 
 - **Implementing double hashing** or a zero knowledge protocol like SRP or OPAQUE **should prevent point 1 and point 2**.
 - By using the smallest possible amount of JavaScript libs and choosing them well, I guess the risk of point 3. is quite small and I'm not sure how we could avoid it completely.
-- Finally, point 4 is quite interesting because I'm not sure how we could detect the change of Javascript resources sent by the server. This point is usually one of the reasons why **people are reluctant to use end-to-end encryption on the browser. A native app is way more secure** because every user downloads the same release which cannot change between two installations. You can read more about this [here](https://cronokirby.com/posts/2021/06/e2e_in_the_browser/).
+- Finally, point 4 is quite interesting because I'm not sure how we could detect the change of Javascript resources sent by the server. This point is usually one of the reasons why **people are reluctant to use client-side encryption (or end-to-end encryption) on the browser. A native app is way more secure** because every user downloads the same release which cannot change between two installations. You can read more about this [here](https://cronokirby.com/posts/2021/06/e2e_in_the_browser/).
 
 ## Conclusion
 
-We have a (partially-flawed) implementation of end-to-end encryption. We can improve things further but it's already quite cool. I learned so much about encryption and the different methods websites use to secure their data! In the future, I would like to explore more about the topic of security.
+We have a (partially-flawed) implementation of client-side encryption. We can improve things further but it's already quite cool. I learned so much about encryption and the different methods websites use to secure their data! In the future, I would like to explore more about the topic of security.
 
 <InsertBox>
 

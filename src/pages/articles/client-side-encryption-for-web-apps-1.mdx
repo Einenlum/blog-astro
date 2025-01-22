@@ -6,14 +6,14 @@ import { components as MarkdownComponents } from '../../components/markdown-comp
 
 export const publishedAt = new Date(2025, 0, 16, 6);
 export const description =
-  "In this series of articles, I document my journey to learning end-to-end encryption. We will cover how to derive a key from a password in the browser.";
-export const title = 'E2EE for Web Apps (1/4): PBKDF2, DEK and CryptoJS';
+  "In this series of articles, I document my journey to learning client-side encryption. We will cover how to derive a key from a password in the browser.";
+export const title = 'Client-side encryption for web apps (1/4): PBKDF2, DEK and CryptoJS';
 export const previewImage = 'https://res.cloudinary.com/dybam16gk/image/upload/v1736949365/blog_images/e2ee/approach-1-2.png';
 export const components = MarkdownComponents;
 
 <ArticleLayout title={title} description={description} publishedAt={publishedAt} previewImage={previewImage}>
 
-_This is a series of articles about end-to-end encryption. You are reading part&nbsp;1._
+_This is a series of articles about client-side encryption. You are reading part&nbsp;1._
 
 **Disclaimer: I'm not a security expert, so take everything I say with a grain of salt (sorry for the pun). Ask for advice from a security expert if you plan to implement this in a production environment.**
 
@@ -22,17 +22,18 @@ _This is a series of articles about end-to-end encryption. You are reading part&
 **Table of contents**
 
 - _Part 1_ (**you are here**): PBKDF2, DEK and CryptoJS
-    * First thoughts and requirements
-    * Choosing the right threat model
-    * A weird lack of resources
-    * First approach
-    * Generating a key from a password
-- [_Part 2_](/articles/e2ee-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
-- [_Part 3_](/articles/e2ee-for-web-apps-3)&nbsp;: Key Encryption Key
-- [_Part 4_](/articles/e2ee-for-web-apps-4)&nbsp;: Possible improvements and conclusion
+    * [First thoughts and requirements](#first-thoughts-and-requirements)
+    * [Choosing the right threat model](#choosing-the-right-threat-model)
+    * [A weird lack of resources](#a-weird-lack-of-resources)
+    * [First approach](#first-approach)
+    * [Generating a key from a password](#generating-a-key-from-a-password)
+- [_Part 2_](/articles/client-side-encryption-for-web-apps-2)&nbsp;: Storing the salt and the DEK, and encrypting/decrypting data
+- [_Part 3_](/articles/client-side-encryption-for-web-apps-3)&nbsp;: Key Encryption Key
+- [_Part 4_](/articles/client-side-encryption-for-web-apps-4)&nbsp;: Possible improvements and conclusion
 
 </InsertBox>
 
+**_Update (22/01/2025)_: The original title of this series was "E2EE for Web Apps" (E2EE meaning end-to-end encryption). I realized my implementation is not E2EE but client-side encryption. I updated all the series to fix this mistake and [talk about the differences](#explanation-e2ee-versus-client-side-encryption).**
 
 The story began when a few friends and I realized there was no good and simple web app to track alcohol consumption. We had a few simple requirements and I thought it would be super easy to code. Fair enough. This would be for my friends and myself, but I also planned to make it public for anyone interested in tracking their health habits.
 
@@ -40,7 +41,7 @@ At some point, I discussed this project with a friend who is also a dev (check h
 
 <InsertBox>
 
-The goal of this series of articles is to document my findings (step by step) about end-to-end encryption and also to get some feedback about my approach. If you think anything is weird or wrong, please tell me! I'm here to learn. You can ping me on [Twitter](https://x.com/Einenlum), [Mastodon](https://fosstodon.org/@einenlum) or [BlueSky](https://bsky.app/profile/einenlum.bsky.social).
+The goal of this series of articles is to document my findings (step by step) about client-side encryption and also to get some feedback about my approach. If you think anything is weird or wrong, please tell me! I'm here to learn. You can ping me on [Twitter](https://x.com/Einenlum), [Mastodon](https://fosstodon.org/@einenlum) or [BlueSky](https://bsky.app/profile/einenlum.bsky.social).
 
 This series will be updated if I receive relevant feedback.
 
@@ -120,11 +121,11 @@ One of the first ideas that came to mind was: <InlineQuote>can't I encrypt the a
 
 I needed a more complex solution and wanted to see how far I could go: could I build something where, as a server, I have absolutely no clue about the amount stored by the client in my db?
 
-I then started to look for answers about end-to-end encryption (E2EE).
+I then started to look for answers about client-side encryption.
 
 ## A weird lack of resources
 
-As developers, we hear more and more about end-to-end encryption these days:
+As developers, we hear more and more about encryption these days:
 - <InlineQuote>Are direct messages on Twitter encrypted?</InlineQuote> (no, I won't call it _X_, sue me)
 - <InlineQuote>Sure, WhatsApp is supposed to use E2EE for their messages, but do they encrypt metadata?</InlineQuote>
 - <InlineQuote>You should use Signal, it's using proper E2EE</InlineQuote>
@@ -132,6 +133,27 @@ As developers, we hear more and more about end-to-end encryption these days:
 Although we feel like it's an important topic and more apps should use it, I was surprised to find so few articles and resources about it. Most of the resources I found were questions and answers on [Security StackExchange](https://security.stackexchange.com/).
 
 Also, most of them were written in the context of a messaging app. Since it is the most discussed use case, it's not that surprising. In this context, the idea is to generate a pair of public and private keys for each user, so that they can exchange messages without the server knowing what they're talking about. I won't dive into this kind of model because my use case is different: my users won't communicate between each other and nothing from a different user will be visible, so having a pair of public/private keys is probably not adapted to my app.
+
+<InsertBox>
+
+<div id="explanation-e2ee-versus-client-side-encryption">
+
+**_Update (22/01/2025)_:** This lack of resources found is probably partly related to my initial mistake. **I thought my implementation was about _E2EE_ (end-to-end encryption) but it's actually _client-side encryption_**.
+
+Here are the main differences:
+
+- **End-to-end encryption** (E2EE) means **two people communicate through a server in the middle**. The server knows nothing about the content that is sent by both parties. Alice and Bob can communicate together and the server hosting the messages cannot decrypt them.
+- **Client-side encryption** means **Alice can store things (for herself) on the server**, and the server cannot read her data.
+- **E2EE** involves **asymmetric** encryption (public/private keys)
+- **Client-side encryption** involves **symmetric** encryption (one key for encryption and decryption)
+
+Some services use both. Client-side encryption is used to store data on the server and E2EE is used to share data between users.
+
+This series was initially supposedly about E2EE but it was a misconception of mine. We talk here about **client-side encryption** (symmetric encryption). We might dive in a future series into E2EE.
+
+</div>
+
+</InsertBox>
 
 **I only need one key for each user that will be used to encrypt/decrypt the data sent to and received from the server.**
 
