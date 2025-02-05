@@ -1,0 +1,90 @@
+import ArticleLayout from '../../layouts/article-layout.astro';
+import SourcedImage from '../../components/sourced-image.astro';
+import NonSourcedImage from '../../components/non-sourced-image.astro';
+import { components as MarkdownComponents } from '../../components/markdown-components.astro';
+
+export const publishedAt = new Date(2025, 1, 5, 22);
+export const description =
+  "Deleting a part of people's lives without any warning is not what you would expect from a serious company.";
+export const title = 'Yahoo, you suck. Badly.';
+export const previewImage = 'https://res.cloudinary.com/dybam16gk/image/upload/v1738789360/blog_images/yahoo_you_suck/yahoo_you_suck_preview.jpg';
+export const components = MarkdownComponents;
+
+<ArticleLayout title={title} description={description} publishedAt={publishedAt} previewImage={previewImage}>
+
+I remember my first email box. At the time, as I was about 10 years old, we had at home a [Minitel](https://en.wikipedia.org/wiki/Minitel). French people reading this will know what I'm talking about.
+
+For the others, the Minitel was an attempt by the French government to create a huge interconnected network all over the country. Many people had this weird box at home, which they plugged on the phone network and they could then access different services. We could type `3611` and access a phone book, or type `3615` and access different services like chat rooms. This was even before the Internet was a thing. It was the _French Internet_.
+
+Look at this beauty.
+
+<SourcedImage
+  src="https://res.cloudinary.com/dybam16gk/image/upload/v1738790018/blog_images/yahoo_you_suck/minitel_xvbfhh.jpg"
+  author="Bernard Marti"
+  alt="A picture of a Minitel"
+  source="https://commons.wikimedia.org/wiki/File:Minitel_Ellenik%C3%AA.jpg?uselang=fr"
+  imageName="Minitel Ellenikê"
+  license="CC-BY-SA-4.0"
+></SourcedImage>
+
+At some point, the Minitel introduced a service making a bridge between its own network and the Internet (after it had been popularized). You could get a free email address _@minitel.net_. My parents had one, and I remember creating one for myself, too. I was so proud of it. I already had an old computer at home (with Windows 3.11) but it was of course not connected to the outside world. I could try different DOS commands and play the best game in the world ([Skyroads](https://www.youtube.com/watch?v=jejhG6aYQIY)) but the notion of something leaving home was introduced with the Minitel. I obviously didn't have a lot of friends to send emails to, but it was fascinating to type something and see it disappear in the network.
+
+Later, I discovered the Internet. First at school (I remember my first search being about [Fabien Barthez](https://en.wikipedia.org/wiki/Fabien_Barthez): sue me, I loved football at the time) and then at home.
+
+It was the era of weird CDs you received by the mailbox or found in shops, giving you a few hours for free browsing on the net before you had to pay.
+
+<div class="max-w-sm md:max-w-md mx-auto">
+<NonSourcedImage
+  src="https://res.cloudinary.com/dybam16gk/image/upload/v1738793558/blog_images/yahoo_you_suck/yahoo_you_suck_aol.jpg"
+  alt="A picture of a CD from AOL offering free Internet hours"
+/>
+</div>
+
+It was time to create a proper email address. _Yahoo!_ was one of the main players at the time. Some people used _LaPoste.net_ (the French postal service) but _Yahoo!_ was the cool one. I created my first email address there, using a nickname I still feel ashamed of today (I was 12 or 13, remember?).
+
+I used this mailbox extensively. Thousands of conversations with a friend of mine, replies of replies of replies of replies of replies. It grew up with me. As an adult, after my studies, I needed to create an email sounding (_way_) more professional and decided to use _Gmail_.
+
+Although this _Gmail_ address became my mail email address with time, I still logged in from time to time (every six months or so) to my _Yahoo!_ mailbox. I had a lot of memories there. Sometimes I would read old conversations. Some were ridiculous, some were quite deep. I never thought about making a backup.
+
+Today, I tried to log in. It asked for a verification code sent to my _Gmail_ address. I logged in, and _Yahoo!_ told me that my account had been deactivated.
+
+Good news, they enabled it again!
+
+**Bad news, all my emails are gone.**
+
+<NonSourcedImage
+    src="https://res.cloudinary.com/dybam16gk/image/upload/v1738794723/blog_images/yahoo_you_suck/y_exongt.png"
+    alt="My empty Yahoo mailbox"
+/>
+
+I indeed got a notification after it enabled my account, telling me that all emails had been deleted because of inactivity.
+
+The FAQ on their website is also quite clear.
+
+<NonSourcedImage
+    src="https://res.cloudinary.com/dybam16gk/image/upload/v1738794736/blog_images/yahoo_you_suck/y2_tld9n2.png"
+    alt="Yahoo FAQ about deleted emails saying 'An inactive mailbox can be recovered by signing in to it and will recover the email account, but not the original content or settings made of the mailbox.'"
+/>
+
+All data is gone from their server. No way to get a backup.
+
+Now, consider this:
+
+_Yahoo_ had my _Gmail_ account and my phone number. They were able to send me an email to ask for a verification code. Seems like they were not able to send even **ONE** email to give me a heads-up about the deletion of all my data.
+
+They could also have kept a zip of the files for at least one week or month. It would cost them absolutely nothing. But no. Yahoo decided to silently kill the memory of so many people.
+
+Some people had the same experience with conversations with deceased friends.
+
+<NonSourcedImage
+    src="https://res.cloudinary.com/dybam16gk/image/upload/v1738795067/blog_images/yahoo_you_suck/y3_e7vuan.png"
+    alt="A reddit conversation where a user says that Yahoo deleted all the emails of his dead friend and conversations for 20 years"
+/>
+
+You can appreciate the empathy of the support team.
+
+Yahooooo!
+
+**Fuck you.**
+
+</ArticleLayout>
